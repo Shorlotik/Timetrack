@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/timetracker  # Подключение к PostgreSQL
+    username: postgres                                 # Логин к БД
+    password: Shorlotik003                             # Пароль к БД
+  jpa:
+    hibernate:
+      ddl-auto: validate  # Hibernate не изменяет схему, а использует Liquibase
+    show-sql: true        # Логирует SQL-запросы в консоль
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml  # Главный файл миграций
+server:
+  port: 8080
