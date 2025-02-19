@@ -18,6 +18,4 @@ public class Project {
 
     @Column(nullable = false, unique = true)
     private String name;
-
-
 }

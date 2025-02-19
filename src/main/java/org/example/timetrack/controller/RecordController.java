@@ -11,16 +11,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/records")
 @RequiredArgsConstructor
-public class RecordController {
-    private final RecordService recordService;
+public class RecordController {  // Определение контроллера для работы с записями
 
-    @GetMapping
+    private final RecordService recordService;  // Сервис для работы с записями (инициализируется через конструктор)
+
+    @GetMapping  // Обработчик GET-запросов на "/records" (получение всех записей)
     public ResponseEntity<List<Record>> getAllRecords() {
-        return ResponseEntity.ok(recordService.getAllRecords());
+        return ResponseEntity.ok(recordService.getAllRecords());  // Возвращает список всех записей с HTTP-статусом 200 (OK)
     }
 
-    @PostMapping
+    @PostMapping  // Обработчик POST-запросов на "/records" (создание новой записи)
     public ResponseEntity<Record> saveRecord(@RequestBody Record record) {
-        return ResponseEntity.ok(recordService.saveRecord(record));
+        return ResponseEntity.ok(recordService.saveRecord(record));  // Сохраняет запись и возвращает её с HTTP-статусом 200 (OK)
     }
 }

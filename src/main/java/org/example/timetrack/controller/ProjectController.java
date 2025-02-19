@@ -11,16 +11,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/projects")
 @RequiredArgsConstructor
-public class ProjectController {
-    private final ProjectService projectService;
+public class ProjectController {  // Определение контроллера для работы с проектами
 
-    @GetMapping
+    private final ProjectService projectService;  // Сервис для работы с проектами (инициализируется через конструктор)
+
+    @GetMapping  // Обработчик GET-запросов на "/projects" (получение всех проектов)
     public ResponseEntity<List<Project>> getAllProjects() {
-        return ResponseEntity.ok(projectService.getAllProjects());
+        return ResponseEntity.ok(projectService.getAllProjects());  // Возвращает список всех проектов с HTTP-статусом 200 (OK)
     }
 
-    @PostMapping
+    @PostMapping  // Обработчик POST-запросов на "/projects" (создание нового проекта)
     public ResponseEntity<Project> createProject(@RequestBody Project project) {
-        return ResponseEntity.ok(projectService.createProject(project.getName()));
+        return ResponseEntity.ok(projectService.createProject(project.getName()));  // Создает проект и возвращает его с HTTP-статусом 200 (OK)
     }
 }
