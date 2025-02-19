@@ -11,8 +11,8 @@
     <groupId>org.example</groupId>
     <artifactId>Timetrack</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Timetrack</name>
-    <description>Timetrack</description>
+    <name>TimeTrack</name>
+    <description>TimeTrack</description>
     <url/>
     <licenses>
         <license/>

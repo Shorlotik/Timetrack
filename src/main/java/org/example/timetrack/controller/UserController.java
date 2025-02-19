@@ -1,6 +1,5 @@
 package org.example.timetrack.controller;
 
-import org.example.timetrack.entity.Role;
 import org.example.timetrack.entity.User;
 import org.example.timetrack.service.UserService;
 import lombok.RequiredArgsConstructor;

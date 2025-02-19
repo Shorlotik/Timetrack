@@ -13,11 +13,11 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public User createUser(String username, String password, Role role) {
+    public void createUser(String username, String password, Role role) {
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         user.setRole(role);
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 }
