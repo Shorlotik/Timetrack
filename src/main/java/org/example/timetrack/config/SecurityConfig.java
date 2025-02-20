@@ -11,20 +11,28 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig { // Определение класса конфигурации безопасности приложения
+public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)  // Отключение защиты от CSRF (стоит включить, если приложение использует сессии и браузерные запросы)
-                .authorizeHttpRequests(auth -> auth  // Настройка авторизации для HTTP-запросов
-                        .requestMatchers("/users/register").permitAll()  // Разрешение публичного доступа к регистрации пользователей
-                        .anyRequest().authenticated()  // Все остальные запросы требуют аутентификации
+                .csrf(AbstractHttpConfigurer::disable) // Отключаем CSRF (нужно, если API будет RESTful)
+                .cors(cors -> {}) // Разрешаем CORS (настраивается при необходимости)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/users/register", "/login").permitAll() // Разрешаем регистрацию и вход
+                        .anyRequest().authenticated() // Остальные запросы требуют авторизации
                 )
-                .formLogin(login -> login.defaultSuccessUrl("/", true))  // Включение формы логина и перенаправление на главную страницу после входа
-                .logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/login"));  // Настройка выхода из системы: выход по `"/logout"` с последующим перенаправлением на `"/login"`
+                .formLogin(login -> login
+                        .loginPage("/login") // URL страницы логина (если фронтенд)
+                        .defaultSuccessUrl("/", true) // Куда направлять после входа
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/login") // Куда перенаправлять после выхода
+                        .permitAll()
+                );
 
-        return http.build();  // Возвращает готовую цепочку фильтров безопасности
+        return http.build();
     }
 
     @Bean
