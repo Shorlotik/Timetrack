@@ -5,6 +5,7 @@ import org.example.timetrack.entity.TimeRecord;
 import org.example.timetrack.repository.TimeTrackRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -13,23 +14,31 @@ public class TimeTrackService {
 
     private final TimeTrackRepository timeTrackRepository;
 
+    // Получить все записи времени
     public List<TimeRecord> getAllTimeRecords() {
         return timeTrackRepository.findAll();
     }
 
-    public TimeRecord createTimeRecord(TimeRecord timeRecord) {
+    // Начать новую запись времени
+    public TimeRecord startTracking(Long userId, Long projectId) {
+        TimeRecord timeRecord = TimeRecord.builder()
+                .userId(userId)
+                .projectId(projectId)
+                .startTime(LocalDateTime.now()) // Фиксирует время старта
+                .build();
         return timeTrackRepository.save(timeRecord);
     }
 
-    public TimeRecord updateTimeRecord(Long id, TimeRecord updatedRecord) {
-        TimeRecord existingRecord = timeTrackRepository.findById(id)
+    // Завершить запись времени
+    public TimeRecord finishTracking(Long id) {
+        TimeRecord timeRecord = timeTrackRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Time record not found"));
-        existingRecord.setStartTime(updatedRecord.getStartTime());
-        existingRecord.setEndTime(updatedRecord.getEndTime());
-        return timeTrackRepository.save(existingRecord);
-    }
 
-    public void deleteTimeRecord(Long id) {
-        timeTrackRepository.deleteById(id);
+        if (timeRecord.getEndTime() != null) {
+            throw new RuntimeException("Time tracking already finished");
+        }
+
+        timeRecord.setEndTime(LocalDateTime.now()); // Фиксирует время окончания
+        return timeTrackRepository.save(timeRecord);
     }
 }

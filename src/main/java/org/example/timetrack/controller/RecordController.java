@@ -1,6 +1,5 @@
 package org.example.timetrack.controller;
 
-import org.example.timetrack.entity.Record;
 import org.example.timetrack.service.RecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

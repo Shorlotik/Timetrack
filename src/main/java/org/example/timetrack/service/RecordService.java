@@ -1,6 +1,5 @@
 package org.example.timetrack.service;
 
-import org.example.timetrack.entity.Record;
 import org.example.timetrack.repository.RecordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

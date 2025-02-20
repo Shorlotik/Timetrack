@@ -19,14 +19,13 @@ public class TimeRecord {
     private Long id;
 
     @Column(nullable = false)
-    private Long userId;  // ID пользователя, который трекал время
+    private Long userId;  // ID пользователя
 
     @Column(nullable = false)
-    private Long projectId;  // ID проекта, к которому относится запись
+    private Long projectId;  // ID проекта
 
     @Column(nullable = false)
-    private LocalDateTime startTime;  // Время начала работы
+    private LocalDateTime startTime;  // Время старта работы
 
-    @Column(nullable = false)
-    private LocalDateTime endTime;  // Время окончания работы
+    private LocalDateTime endTime;  // Время завершения (может быть null, если работа не завершена)
 }
