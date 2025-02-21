@@ -1,5 +1,13 @@
 package org.example.timetrack.entity;
 
-public enum Role {
-    USER, ADMIN;
+import org.springframework.security.core.GrantedAuthority;
+
+public enum Role implements GrantedAuthority {
+    ROLE_USER,
+    ROLE_ADMIN, USER;
+
+    @Override
+    public String getAuthority() {
+        return name();
+    }
 }
