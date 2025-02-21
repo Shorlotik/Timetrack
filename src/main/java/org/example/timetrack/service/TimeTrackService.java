@@ -1,7 +1,7 @@
 //package org.example.timetrack.service;
 //
 //import lombok.RequiredArgsConstructor;
-//import org.example.timetrack.entity.TimeRecord;
+//import org.example.timetrack.entity.Record;
 //import org.example.timetrack.repository.TimeTrackRepository;
 //import org.springframework.stereotype.Service;
 //
@@ -15,13 +15,13 @@
 //    private final TimeTrackRepository timeTrackRepository;
 //
 //    // Получить все записи времени
-//    public List<TimeRecord> getAllTimeRecords() {
+//    public List<org.example.timetrack.entity.Record> getAllTimeRecords() {
 //        return timeTrackRepository.findAll();
 //    }
 //
 //    // Начать новую запись времени
-//    public TimeRecord startTracking(Long userId, Long projectId) {
-//        TimeRecord timeRecord = TimeRecord.builder()
+//    public Record startTracking(Long userId, Long projectId) {
+//        Record timeRecord = Record.builder()
 //                .userId(userId)
 //                .projectId(projectId)
 //                .startTime(LocalDateTime.now()) // Фиксирует время старта
@@ -30,8 +30,8 @@
 //    }
 //
 //    // Завершить запись времени
-//    public TimeRecord finishTracking(Long id) {
-//        TimeRecord timeRecord = timeTrackRepository.findById(id)
+//    public Record finishTracking(Long id) {
+//        Record timeRecord = timeTrackRepository.findById(id)
 //                .orElseThrow(() -> new RuntimeException("Time record not found"));
 //
 //        if (timeRecord.getEndTime() != null) {
