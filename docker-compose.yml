@@ -1,22 +1,22 @@
-version: '3.8'
-
+version: "3.8"
 services:
-  db:
-    image: postgres:17
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Shorlotik003
-      POSTGRES_DB: timetracker
-    ports:
-      - "5432:5432"
-
   app:
     build: .
     depends_on:
       - db
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/timetracker
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: Shorlotik003
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=timetracker
+      - DB_USER=postgres
+      - DB_PASSWORD=Shorlotik003
     ports:
-      - "8088:8088"
+      - "8080:8080"
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: timetracker
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Shorlotik003
+    ports:
+      - "5432:5432"
