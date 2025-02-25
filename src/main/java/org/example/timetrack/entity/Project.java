@@ -1,13 +1,21 @@
 package org.example.timetrack.entity;
 
-import jakarta.persistence.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.List;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+
+
 
 @Entity
-@Table(name = "projects")
-
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Project {
 
     @Id
@@ -15,31 +23,5 @@ public class Project {
     private Long id;
 
     private String name;
-
-    @OneToMany(mappedBy = "project")
-    private List<Record> records;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<Record> getRecords() {
-        return records;
-    }
-
-    public void setRecords(List<Record> records) {
-        this.records = records;
-    }
+    private String description;
 }

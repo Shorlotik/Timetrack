@@ -4,11 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class TimeTrackApplicationTests {
-
+public class TimeTrackApplicationTests {
     @Test
     void contextLoads() {
-
+        // Тестирование загрузки контекста
     }
-
 }
+

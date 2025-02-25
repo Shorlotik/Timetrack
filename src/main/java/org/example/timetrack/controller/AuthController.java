@@ -1,38 +1,29 @@
 package org.example.timetrack.controller;
 
-import org.example.timetrack.entity.Role;
-import org.example.timetrack.entity.User;
-import org.example.timetrack.repository.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.example.timetrack.dto.AuthRequestDTO;
+import org.example.timetrack.dto.AuthResponseDTO;
+import org.example.timetrack.security.JwtUtils;
+import org.example.timetrack.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
+    private final JwtUtils jwtUtils;
 
-    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+    @Autowired
+    public AuthController(UserService userService, JwtUtils jwtUtils) {
+        this.userService = userService;
+        this.jwtUtils = jwtUtils;
     }
 
-    @PostMapping("/register")
-    public String register(@RequestParam String username, @RequestParam String password) {
-        if (userRepository.findByUsername(username).isPresent()) {
-            return "Username already taken";
-        }
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(password));
-        user.setRole(Role.ROLE_USER);
-        userRepository.save(user);
-        return "User registered successfully!";
-    }
-
-    @GetMapping("/success")
-    public String success() {
-        return "Login successful!";
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthRequestDTO authRequestDTO) {
+        String token = userService.authenticate(authRequestDTO.getUsername(), authRequestDTO.getPassword());
+        return ResponseEntity.ok(AuthResponseDTO.builder().token(token).build());
     }
 }
