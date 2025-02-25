@@ -30,20 +30,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        // Получаем заголовок Authorization
+        // Получение заголовка Authorization
         String authHeader = request.getHeader("Authorization");
 
-        // Проверяем, что заголовок существует и начинается с "Bearer "
+        // Проверка заголовок существует и начинается с "Bearer "
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Извлекаем сам токен
+        // Извлечение токен
         String jwt = authHeader.substring(7);
         String username = jwtService.extractUsername(jwt);
 
-        // Проверяем, что пользователь не аутентифицирован повторно
+        // Проверяем что пользователь не аутентифицирован повторно
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 

@@ -9,14 +9,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Base64;
 import java.util.Date;
 import java.util.function.Function;
 
 @Component
 public class JwtUtils {
 
-    // Получение секретного ключа из файла конфигурации (например, .env)
+    // Получение секретного ключа из файла конфигурации
     @Value("${JWT_SECRET}")
     private String secretKey;
 

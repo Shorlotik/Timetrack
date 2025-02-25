@@ -2,7 +2,6 @@ package org.example.timetrack.controller;
 
 import org.example.timetrack.dto.AuthRequestDTO;
 import org.example.timetrack.dto.AuthResponseDTO;
-import org.example.timetrack.security.JwtUtils;
 import org.example.timetrack.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +12,10 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserService userService;
-    private final JwtUtils jwtUtils;
 
     @Autowired
-    public AuthController(UserService userService, JwtUtils jwtUtils) {
+    public AuthController(UserService userService) {
         this.userService = userService;
-        this.jwtUtils = jwtUtils;
     }
 
     @PostMapping("/login")

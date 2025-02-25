@@ -29,7 +29,7 @@ public class RecordService {
 
     public Record startTracking(Long projectId) {
         User user = userRepository.findByUsername("username")
-                .orElseThrow(() -> new RuntimeException("User not found")); // Обрабатываем Optional
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Project not found"));
@@ -43,7 +43,7 @@ public class RecordService {
 
     public Record finishTracking(Long projectId) {
         User user = userRepository.findByUsername("username")
-                .orElseThrow(() -> new RuntimeException("User not found")); // Обрабатываем Optional
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Project not found"));
