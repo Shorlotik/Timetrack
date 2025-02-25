@@ -31,13 +31,13 @@ Time Tracker API - это сервис для управления времен�
 4. Соберите и запустите приложение:
    ```sh
    mvn clean install
-   java -jar target/timetracker-api.jar
+   java -jar target/timetrack-api.jar
    ```
 
 ### 2. Запуск с Docker
 1. Соберите Docker-образ:
    ```sh
-   docker build -t timetracker-api .
+   docker build -t timetrack-api .
    ```
 2. Запустите контейнер с PostgreSQL и приложением:
    ```sh
