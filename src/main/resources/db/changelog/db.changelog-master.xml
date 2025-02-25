@@ -1,35 +1,22 @@
-<databaseChangeLog>
-    <changeSet id="1" author="developer">
-        <createTable tableName="users">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="username" type="varchar(255)" unique="true"/>
-            <column name="password" type="varchar(255)"/>
-            <column name="role" type="varchar(50)"/>
-        </createTable>
-    </changeSet>
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="2" author="developer">
-        <createTable tableName="projects">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true"/>
+    <changeSet id="1" author="admin">
+        <createTable tableName="user">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="name" type="varchar(255)" unique="true"/>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="3" author="developer">
-        <createTable tableName="records">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true"/>
+            <column name="username" type="varchar(255)">
+                <constraints nullable="false"/>
             </column>
-            <column name="user_id" type="bigint"/>
-            <column name="project_id" type="bigint"/>
-            <column name="start_time" type="timestamp"/>
-            <column name="end_time" type="timestamp"/>
-            <addForeignKeyConstraint baseTableName="records" baseColumnNames="user_id" referencedTableName="users" referencedColumnNames="id"/>
-            <addForeignKeyConstraint baseTableName="records" baseColumnNames="project_id" referencedTableName="projects" referencedColumnNames="id"/>
+            <column name="password" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="varchar(255)"/>
         </createTable>
     </changeSet>
 </databaseChangeLog>
