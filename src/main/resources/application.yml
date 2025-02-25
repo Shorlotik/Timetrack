@@ -1,12 +1,23 @@
 spring:
   datasource:
-    url: jdbc:postgresql://db:5432/timetracker
+    url: jdbc:postgresql://localhost:5432/timetracker
     username: postgres
-    password: Shorlotik003
+    password: ${SPRING_DATASOURCE_PASSWORD}  # Использование переменной окружения
     driver-class-name: org.postgresql.Driver
+
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
   liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: true
+    locations: classpath:/db/changelog/db.changelog-master.yaml
+
+jwt:
+  secret: ${JWT_SECRET:default_secret_key}  # Значение по умолчанию, если переменная не найдена
+  expiration: ${JWT_EXPIRATION:86400000}  # Значение по умолчанию (1 день)
