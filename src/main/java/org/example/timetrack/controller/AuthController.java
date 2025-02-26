@@ -28,4 +28,12 @@ public class AuthController {
         UserDTO createdUser = userService.createUser(userDTO);  // Изменено с register на createUser
         return ResponseEntity.ok(createdUser);
     }
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
+        if (token != null && !token.isEmpty()) {
+            userService.logout(token);  // Blacklist the token
+            return ResponseEntity.ok("Successfully logged out");
+        }
+        return ResponseEntity.badRequest().body("Invalid token");
+    }
 }

@@ -29,26 +29,35 @@ public class ProjectService {
     }
 
     // READ ONE - Получение проекта по ID
-    public Project getProjectById(Long id) {
-        Optional<Project> project = projectRepository.findById(id);
-        return project.orElse(null);  // Возвращает проект, если он найден, иначе возвращает null
+    public Optional<Project> getProjectById(Long id) {
+        return projectRepository.findById(id);
     }
 
     // UPDATE - Обновление проекта
-    public Project updateProject(Long id, Project project) {
+    public Optional<Project> updateProject(Long id, Project project) {
         if (projectRepository.existsById(id)) {
-            project.setId(id);  // Устанавливаем ID, чтобы проект был обновлен
-            return projectRepository.save(project);  // Сохраняем обновленный проект
+            project.setId(id);
+            return Optional.of(projectRepository.save(project));
         }
-        return null;  // Если проект с таким ID не найден, возвращаем null
+        return Optional.empty();
     }
 
     // DELETE - Удаление проекта
     public boolean deleteProject(Long id) {
         if (projectRepository.existsById(id)) {
-            projectRepository.deleteById(id);  // Удаляем проект
-            return true;  // Успешное удаление
+            projectRepository.deleteById(id);
+            return true;
         }
-        return false;  // Проект не найден для удаления
+        return false;
+    }
+
+    // NEW: Получение проектов пользователя
+    public List<Project> getProjectsByUser(Long userId) {
+        return projectRepository.findByUserId(userId);
+    }
+
+    // NEW: Поиск проектов по названию (поиск по части названия)
+    public List<Project> searchProjectsByName(String name) {
+        return projectRepository.findByNameContainingIgnoreCase(name);
     }
 }

@@ -34,30 +34,36 @@ public class ProjectController {
     // READ ONE - Получение проекта по ID
     @GetMapping("/{id}")
     public ResponseEntity<Project> getProjectById(@PathVariable Long id) {
-        Project project = projectService.getProjectById(id);
-        if (project == null) {
-            return ResponseEntity.notFound().build();  // Возвращает 404, если проект не найден
-        }
-        return ResponseEntity.ok(project);  // Возвращает 200 и сам проект
+        return projectService.getProjectById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // UPDATE - Обновление проекта
     @PutMapping("/{id}")
     public ResponseEntity<Project> updateProject(@PathVariable Long id, @RequestBody Project project) {
-        Project updatedProject = projectService.updateProject(id, project);
-        if (updatedProject == null) {
-            return ResponseEntity.notFound().build();  // Возвращает 404, если проект не найден для обновления
-        }
-        return ResponseEntity.ok(updatedProject);  // Возвращает 200 и обновленный проект
+        return projectService.updateProject(id, project)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // DELETE - Удаление проекта
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
-        boolean deleted = projectService.deleteProject(id);
-        if (!deleted) {
-            return ResponseEntity.notFound().build();  // Возвращает 404, если проект не найден для удаления
-        }
-        return ResponseEntity.noContent().build();  // Возвращает 204, если проект успешно удален
+        return projectService.deleteProject(id) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+
+    // NEW: Получение проектов пользователя
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Project>> getProjectsByUser(@PathVariable Long userId) {
+        List<Project> projects = projectService.getProjectsByUser(userId);
+        return projects.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(projects);
+    }
+
+    // NEW: Поиск проектов по названию (поиск по части названия)
+    @GetMapping("/search")
+    public ResponseEntity<List<Project>> searchProjectsByName(@RequestParam String name) {
+        List<Project> projects = projectService.searchProjectsByName(name);
+        return projects.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(projects);
     }
 }

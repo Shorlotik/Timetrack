@@ -75,6 +75,25 @@ public class RecordService {
                 .orElseThrow(() -> new RuntimeException("Record not found"));
     }
 
+    // Получить записи определенного пользователя
+    public List<Record> getRecordsByUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return recordRepository.findByUser(user);
+    }
+
+    // Получить записи по проекту
+    public List<Record> getRecordsByProject(Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+        return recordRepository.findByProject(project);
+    }
+
+    // Получить записи за определенный период времени
+    public List<Record> getRecordsBetweenDates(LocalDateTime startDate, LocalDateTime endDate) {
+        return recordRepository.findByStartTimeBetween(startDate, endDate);
+    }
+
     // Обновить запись
     public Record updateRecord(Long id, Record updatedRecord) {
         Record existingRecord = recordRepository.findById(id)
@@ -93,5 +112,13 @@ public class RecordService {
         Record record = recordRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Record not found"));
         recordRepository.delete(record);
+    }
+
+    // Удалить все записи пользователя (например, при удалении аккаунта)
+    public void deleteRecordsByUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        List<Record> records = recordRepository.findByUser(user);
+        recordRepository.deleteAll(records);
     }
 }

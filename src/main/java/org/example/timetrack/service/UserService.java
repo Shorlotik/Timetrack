@@ -17,11 +17,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
+    private final TokenBlacklistService tokenBlacklistService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils, TokenBlacklistService tokenBlacklistService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtUtils = new JwtUtils();
+        this.jwtUtils = jwtUtils;
+        this.tokenBlacklistService = tokenBlacklistService;
     }
 
     // Метод для создания пользователя (регистрация)
@@ -36,7 +38,7 @@ public class UserService {
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
         user.setRole(userDTO.getRole());
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword())); // Задаем пароль из DTO
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword())); // Хешируем пароль
         userRepository.save(user);
 
         return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
@@ -71,8 +73,11 @@ public class UserService {
 
     // Метод для удаления пользователя
     public boolean deleteUser(Long id) {
-        userRepository.deleteById(id);
-        return true; // исправлено с false на true
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     // Метод для аутентификации пользователя
@@ -86,5 +91,15 @@ public class UserService {
             }
         }
         throw new RuntimeException("Invalid username or password");
+    }
+
+    // Метод для поиска пользователя по имени
+    public Optional<UserDTO> findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .map(user -> new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getRole()));
+    }
+
+    public void logout(String token) {
+        tokenBlacklistService.blacklistToken(token);  // Add the token to blacklist
     }
 }

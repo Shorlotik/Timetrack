@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
@@ -17,47 +18,55 @@ public class UserController {
         this.userService = userService;
     }
 
-    // CREATE
+    // CREATE (Регистрация пользователя)
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
         UserDTO createdUser = userService.createUser(userDTO);
-        return ResponseEntity.status(201).body(createdUser);  // 201 для успешного создания
+        return ResponseEntity.status(201).body(createdUser);
     }
 
-    // READ ONE
+    // READ ONE (Получить пользователя по ID)
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         UserDTO userDTO = userService.getUserById(id);
-        if (userDTO == null) {
-            return ResponseEntity.notFound().build();  // 404 если пользователь не найден
-        }
-        return ResponseEntity.ok(userDTO);  // 200 для успешного получения
+        return ResponseEntity.ok(userDTO);
     }
 
-    // READ ALL
+    // READ ALL (Получить всех пользователей)
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<UserDTO> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);  // 200 для успешного получения всех пользователей
+        return ResponseEntity.ok(users);
     }
 
-    // UPDATE
+    // UPDATE (Обновить пользователя)
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
         UserDTO updatedUser = userService.updateUser(id, userDTO);
-        if (updatedUser == null) {
-            return ResponseEntity.notFound().build();  // 404 если не удалось обновить пользователя
-        }
-        return ResponseEntity.ok(updatedUser);  // 200 для успешного обновления
+        return ResponseEntity.ok(updatedUser);
     }
 
-    // DELETE
+    // DELETE (Удалить пользователя)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         boolean deleted = userService.deleteUser(id);
         if (!deleted) {
-            return ResponseEntity.notFound().build();  // 404 если пользователь не найден для удаления
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.noContent().build();  // 204 для успешного удаления
+        return ResponseEntity.noContent().build();
+    }
+
+    // LOGIN (Аутентификация пользователя)
+    @PostMapping("/login")
+    public ResponseEntity<String> authenticate(@RequestParam String username, @RequestParam String password) {
+        String token = userService.authenticate(username, password);
+        return ResponseEntity.ok(token);
+    }
+
+    // FIND BY USERNAME (Поиск пользователя по имени)
+    @GetMapping("/find")
+    public ResponseEntity<UserDTO> findUserByUsername(@RequestParam String username) {
+        Optional<UserDTO> userDTO = userService.findByUsername(username);
+        return userDTO.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
