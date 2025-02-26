@@ -24,28 +24,39 @@ public class UserService {
         this.jwtUtils = new JwtUtils();
     }
 
+    // Метод для создания пользователя (регистрация)
     public UserDTO createUser(UserDTO userDTO) {
+        // Проверяем, существует ли уже пользователь с таким именем
+        Optional<User> existingUser = userRepository.findByUsername(userDTO.getUsername());
+        if (existingUser.isPresent()) {
+            throw new RuntimeException("User with this username already exists");
+        }
+
         User user = new User();
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
         user.setRole(userDTO.getRole());
-        user.setPassword(passwordEncoder.encode("defaultPassword")); // Задай пароль
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword())); // Задаем пароль из DTO
         userRepository.save(user);
+
         return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
     }
 
+    // Метод для получения пользователя по ID
     public UserDTO getUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
     }
 
+    // Метод для получения всех пользователей
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream()
                 .map(user -> new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getRole()))
                 .collect(Collectors.toList());
     }
 
+    // Метод для обновления данных пользователя
     public UserDTO updateUser(Long id, UserDTO userDTO) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -58,11 +69,13 @@ public class UserService {
         return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
     }
 
+    // Метод для удаления пользователя
     public boolean deleteUser(Long id) {
         userRepository.deleteById(id);
-        return false;
+        return true; // исправлено с false на true
     }
 
+    // Метод для аутентификации пользователя
     public String authenticate(String username, String password) {
         Optional<User> userOptional = userRepository.findByUsername(username);
 

@@ -27,8 +27,9 @@ public class RecordService {
         this.projectRepository = projectRepository;
     }
 
-    public Record startTracking(Long projectId) {
-        User user = userRepository.findByUsername("username")
+    // Старт трекинга
+    public Record startTracking(Long projectId, String username) {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Project project = projectRepository.findById(projectId)
@@ -41,27 +42,56 @@ public class RecordService {
         return recordRepository.save(record);
     }
 
-    public Record finishTracking(Long projectId) {
-        User user = userRepository.findByUsername("username")
+    // Завершение трекинга
+    public Record finishTracking(Long projectId, String username) {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Project not found"));
 
+        // Получаем последнюю запись по пользователю и проекту
         Record record = recordRepository.findTopByUserAndProjectOrderByStartTimeDesc(user, project)
                 .orElseThrow(() -> new RuntimeException("Record not found"));
 
         LocalDateTime finishTime = LocalDateTime.now();
         record.setFinishTime(finishTime);
 
-        // Правильное вычисление Duration
+        // Рассчитываем продолжительность
         Duration duration = Duration.between(record.getStartTime(), finishTime);
         record.setDuration(duration);
 
         return recordRepository.save(record);
     }
 
+    // Получить все записи
     public List<Record> getAllRecords() {
         return recordRepository.findAll();
+    }
+
+    // Получить запись по ID
+    public Record getRecordById(Long id) {
+        return recordRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Record not found"));
+    }
+
+    // Обновить запись
+    public Record updateRecord(Long id, Record updatedRecord) {
+        Record existingRecord = recordRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Record not found"));
+
+        existingRecord.setStartTime(updatedRecord.getStartTime());
+        existingRecord.setFinishTime(updatedRecord.getFinishTime());
+        existingRecord.setDuration(updatedRecord.getDuration());
+        existingRecord.setProject(updatedRecord.getProject());
+
+        return recordRepository.save(existingRecord);
+    }
+
+    // Удалить запись
+    public void deleteRecord(Long id) {
+        Record record = recordRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Record not found"));
+        recordRepository.delete(record);
     }
 }

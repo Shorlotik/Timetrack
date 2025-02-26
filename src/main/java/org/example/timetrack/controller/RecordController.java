@@ -19,13 +19,13 @@ public class RecordController {
     }
 
     @PostMapping("/start")
-    public Record startTracking(@RequestParam Long projectId) {
-        return recordService.startTracking(projectId);
+    public Record startTracking(@RequestParam Long projectId, @RequestParam String username) {
+        return recordService.startTracking(projectId, username);
     }
 
     @PostMapping("/finish")
-    public Record finishTracking(@RequestParam Long projectId) {
-        return recordService.finishTracking(projectId);
+    public Record finishTracking(@RequestParam Long projectId, @RequestParam String username) {
+        return recordService.finishTracking(projectId, username);
     }
 
     @GetMapping

@@ -1,7 +1,6 @@
 package org.example.timetrack.controller;
 
-import org.example.timetrack.dto.AuthRequestDTO;
-import org.example.timetrack.dto.AuthResponseDTO;
+import org.example.timetrack.dto.UserDTO;
 import org.example.timetrack.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +18,14 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthRequestDTO authRequestDTO) {
-        String token = userService.authenticate(authRequestDTO.getUsername(), authRequestDTO.getPassword());
-        return ResponseEntity.ok(AuthResponseDTO.builder().token(token).build());
+    public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
+        String token = userService.authenticate(userDTO.getUsername(), userDTO.getPassword());
+        return ResponseEntity.ok(token);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<UserDTO> register(@RequestBody UserDTO userDTO) {
+        UserDTO createdUser = userService.createUser(userDTO);  // Изменено с register на createUser
+        return ResponseEntity.ok(createdUser);
     }
 }
