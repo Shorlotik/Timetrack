@@ -1,6 +1,8 @@
 package org.example.timetrack.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.example.timetrack.dto.UserDTO;
+import org.example.timetrack.service.AuthService;
 import org.example.timetrack.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,13 +12,11 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    private final AuthService authService;
 
     // CREATE (Регистрация пользователя)
     @PostMapping
@@ -50,16 +50,13 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         boolean deleted = userService.deleteUser(id);
-        if (!deleted) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.noContent().build();
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
     // LOGIN (Аутентификация пользователя)
     @PostMapping("/login")
     public ResponseEntity<String> authenticate(@RequestParam String username, @RequestParam String password) {
-        String token = userService.authenticate(username, password);
+        String token = authService.authenticate(username, password);
         return ResponseEntity.ok(token);
     }
 

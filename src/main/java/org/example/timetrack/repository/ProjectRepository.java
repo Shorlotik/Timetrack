@@ -10,7 +10,7 @@ import java.util.List;
 public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     // Найти проекты, связанные с пользователем
-    List<Project> findByUserId(Long userId);
+    List<Project> findByUser_Id(Long userId);
 
     // Найти проекты по части названия (регистронезависимый поиск)
     List<Project> findByNameContainingIgnoreCase(String name);

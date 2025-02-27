@@ -26,5 +26,5 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
     List<Record> findByStartTimeBetween(LocalDateTime startDate, LocalDateTime endDate);
 
     // Удалить все записи пользователя
-    void deleteByUser(User user);
+    void deleteByUser(User user); // Метод для удаления записей по пользователю
 }

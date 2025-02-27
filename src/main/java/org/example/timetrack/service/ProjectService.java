@@ -53,7 +53,7 @@ public class ProjectService {
 
     // NEW: Получение проектов пользователя
     public List<Project> getProjectsByUser(Long userId) {
-        return projectRepository.findByUserId(userId);
+        return projectRepository.findByUser_Id(userId);
     }
 
     // NEW: Поиск проектов по названию (поиск по части названия)
