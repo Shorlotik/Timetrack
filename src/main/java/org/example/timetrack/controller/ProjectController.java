@@ -3,6 +3,7 @@ package org.example.timetrack.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.timetrack.dto.ProjectDTO;
 import org.example.timetrack.service.ProjectService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<ProjectDTO> createProject(@RequestBody ProjectDTO projectDTO) {
         ProjectDTO createdProject = projectService.createProject(projectDTO);
-        return ResponseEntity.status(201).body(createdProject);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdProject);
     }
 
     // Получение всех проектов

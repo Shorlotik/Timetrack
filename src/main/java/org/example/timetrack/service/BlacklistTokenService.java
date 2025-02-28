@@ -1,26 +1,18 @@
 package org.example.timetrack.service;
 
-import lombok.RequiredArgsConstructor;
-import org.example.timetrack.repository.BlacklistTokenRepository;
-import org.example.timetrack.entity.BlacklistedToken;
 import org.springframework.stereotype.Service;
-
-import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
-@RequiredArgsConstructor
 public class BlacklistTokenService {
-
-    private final BlacklistTokenRepository blacklistTokenRepository;
+    private final Set<String> blacklistedTokens = new HashSet<>();
 
     public void blacklistToken(String token) {
-        BlacklistedToken blacklistedToken = new BlacklistedToken();
-        blacklistedToken.setToken(token);
-        blacklistedToken.setBlacklistedAt(Instant.now());
-        blacklistTokenRepository.save(blacklistedToken);
+        blacklistedTokens.add(token);
     }
 
     public boolean isTokenBlacklisted(String token) {
-        return blacklistTokenRepository.existsByToken(token);
+        return blacklistedTokens.contains(token);
     }
 }
