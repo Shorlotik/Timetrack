@@ -1,7 +1,7 @@
 package org.example.timetrack.service;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.example.timetrack.dto.AuthDTO;
 import org.example.timetrack.security.JwtUtils;
 import org.example.timetrack.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,18 +14,15 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
-    @Getter
-    private final BlacklistTokenService blacklistTokenService;
 
-    public String authenticate(String username, String password) {
-        var user = userRepository.findByUsername(username)
+    public String authenticate(AuthDTO authDTO) {
+        var user = userRepository.findByUsername(authDTO.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
+        if (!passwordEncoder.matches(authDTO.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid credentials");
         }
 
         return jwtUtils.generateToken(user.getUsername());
     }
-
 }

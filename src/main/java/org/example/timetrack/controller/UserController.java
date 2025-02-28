@@ -1,6 +1,7 @@
 package org.example.timetrack.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.timetrack.dto.AuthDTO;
 import org.example.timetrack.dto.UserDTO;
 import org.example.timetrack.service.AuthService;
 import org.example.timetrack.service.UserService;
@@ -55,8 +56,8 @@ public class UserController {
 
     // LOGIN (Аутентификация пользователя)
     @PostMapping("/login")
-    public ResponseEntity<String> authenticate(@RequestParam String username, @RequestParam String password) {
-        String token = authService.authenticate(username, password);
+    public ResponseEntity<String> authenticate(@RequestBody AuthDTO authDTO) {
+        String token = authService.authenticate(authDTO);
         return ResponseEntity.ok(token);
     }
 

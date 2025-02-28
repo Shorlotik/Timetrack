@@ -1,48 +1,57 @@
 package org.example.timetrack.service;
 
+import lombok.RequiredArgsConstructor;
+import org.example.timetrack.dto.ProjectDTO;
 import org.example.timetrack.entity.Project;
+import org.example.timetrack.entity.User;
 import org.example.timetrack.repository.ProjectRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.example.timetrack.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    public ProjectService(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
+    public ProjectDTO createProject(ProjectDTO projectDTO) {
+        User user = userRepository.findById(projectDTO.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Project project = new Project();
+        project.setName(projectDTO.getName());
+        project.setDescription(projectDTO.getDescription());
+        project.setUser(user);
+
+        Project savedProject = projectRepository.save(project);
+        return convertToDTO(savedProject);
     }
 
-    // CREATE - Создание проекта
-    public Project createProject(Project project) {
-        return projectRepository.save(project);
+    public List<ProjectDTO> getAllProjects() {
+        return projectRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
-    // READ ALL - Получение всех проектов
-    public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+    public Optional<ProjectDTO> getProjectById(Long id) {
+        return projectRepository.findById(id)
+                .map(this::convertToDTO);
     }
 
-    // READ ONE - Получение проекта по ID
-    public Optional<Project> getProjectById(Long id) {
-        return projectRepository.findById(id);
+    public Optional<ProjectDTO> updateProject(Long id, ProjectDTO projectDTO) {
+        return projectRepository.findById(id).map(existingProject -> {
+            existingProject.setName(projectDTO.getName());
+            existingProject.setDescription(projectDTO.getDescription());
+            projectRepository.save(existingProject);
+            return convertToDTO(existingProject);
+        });
     }
 
-    // UPDATE - Обновление проекта
-    public Optional<Project> updateProject(Long id, Project project) {
-        if (projectRepository.existsById(id)) {
-            project.setId(id);
-            return Optional.of(projectRepository.save(project));
-        }
-        return Optional.empty();
-    }
-
-    // DELETE - Удаление проекта
     public boolean deleteProject(Long id) {
         if (projectRepository.existsById(id)) {
             projectRepository.deleteById(id);
@@ -51,13 +60,20 @@ public class ProjectService {
         return false;
     }
 
-    // NEW: Получение проектов пользователя
-    public List<Project> getProjectsByUser(Long userId) {
-        return projectRepository.findByUser_Id(userId);
+    private ProjectDTO convertToDTO(Project project) {
+        return new ProjectDTO(project.getId(), project.getName(), project.getDescription(), project.getUser().getId());
     }
 
-    // NEW: Поиск проектов по названию (поиск по части названия)
-    public List<Project> searchProjectsByName(String name) {
-        return projectRepository.findByNameContainingIgnoreCase(name);
+    public List<ProjectDTO> getProjectsByUser(Long userId) {
+        return projectRepository.findByUserId(userId).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
+
+    public List<ProjectDTO> searchProjectsByName(String name) {
+        return projectRepository.findByNameContainingIgnoreCase(name).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
 }

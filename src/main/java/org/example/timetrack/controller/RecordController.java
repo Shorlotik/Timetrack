@@ -1,5 +1,6 @@
 package org.example.timetrack.controller;
 
+import org.example.timetrack.dto.RecordDTO;
 import org.example.timetrack.entity.Record;
 import org.example.timetrack.service.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,10 +50,10 @@ public class RecordController {
         return recordService.getRecordsByProject(projectId);
     }
 
-    // Обновить запись
+    // Обновить запись (используем RecordDTO)
     @PatchMapping("/{recordId}")
-    public Record updateRecord(@PathVariable Long recordId, @RequestBody Record updatedRecord) {
-        return recordService.updateRecord(recordId, updatedRecord);
+    public Record updateRecord(@PathVariable Long recordId, @RequestBody RecordDTO updatedRecordDTO) {
+        return recordService.updateRecord(recordId, updatedRecordDTO);
     }
 
     // Удалить запись

@@ -1,12 +1,12 @@
 package org.example.timetrack.service;
 
+import org.example.timetrack.dto.RecordDTO;
 import org.example.timetrack.entity.Project;
 import org.example.timetrack.entity.Record;
 import org.example.timetrack.entity.User;
 import org.example.timetrack.repository.ProjectRepository;
 import org.example.timetrack.repository.RecordRepository;
 import org.example.timetrack.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -20,7 +20,6 @@ public class RecordService {
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
 
-    @Autowired
     public RecordService(RecordRepository recordRepository, UserRepository userRepository, ProjectRepository projectRepository) {
         this.recordRepository = recordRepository;
         this.userRepository = userRepository;
@@ -94,15 +93,19 @@ public class RecordService {
         return recordRepository.findByStartTimeBetween(startDate, endDate);
     }
 
-    // Обновить запись
-    public Record updateRecord(Long id, Record updatedRecord) {
+    // Обновить запись с использованием DTO
+    public Record updateRecord(Long id, RecordDTO updatedRecordDTO) {
         Record existingRecord = recordRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Record not found"));
 
-        existingRecord.setStartTime(updatedRecord.getStartTime());
-        existingRecord.setFinishTime(updatedRecord.getFinishTime());
-        existingRecord.setDuration(updatedRecord.getDuration());
-        existingRecord.setProject(updatedRecord.getProject());
+        // Маппинг данных из DTO на сущность
+        existingRecord.setStartTime(updatedRecordDTO.getStartTime());
+        existingRecord.setFinishTime(updatedRecordDTO.getFinishTime());
+        existingRecord.setDuration(Duration.ofDays(updatedRecordDTO.getDuration()));
+
+        Project project = projectRepository.findById(updatedRecordDTO.getProjectId())
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+        existingRecord.setProject(project);
 
         return recordRepository.save(existingRecord);
     }
@@ -114,10 +117,10 @@ public class RecordService {
         recordRepository.delete(record);
     }
 
-    // Удалить все записи пользователя (например, при удалении аккаунта)
+    // Удалить все записи пользователя
     public void deleteRecordsByUser(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        recordRepository.deleteByUser(user); // Используем deleteByUser напрямую
+        recordRepository.deleteByUser(user);
     }
 }

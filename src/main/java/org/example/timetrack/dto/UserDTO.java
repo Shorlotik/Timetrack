@@ -1,8 +1,8 @@
 package org.example.timetrack.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -13,7 +13,6 @@ public class UserDTO {
     private String email;
     private String role;
     private String password;
-
 
     public UserDTO(Long id, String username, String email, String role) {
         this.id = id;

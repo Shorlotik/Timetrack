@@ -27,6 +27,7 @@ public class UserService {
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
         user.setRole(userDTO.getRole());
+        // Пароль из DTO может быть передан в другом виде
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
         userRepository.save(user);
@@ -44,14 +45,12 @@ public class UserService {
                 .map(user -> new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getRole()));
     }
 
-    // Добавлен метод получения пользователя по ID
     public UserDTO getUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
     }
 
-    // Добавлен метод обновления пользователя
     public UserDTO updateUser(Long id, UserDTO userDTO) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -68,7 +67,6 @@ public class UserService {
         return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
     }
 
-    // Метод удаления пользователя
     public boolean deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
             return false;
