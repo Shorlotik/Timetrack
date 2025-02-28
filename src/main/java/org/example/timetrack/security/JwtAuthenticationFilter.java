@@ -5,7 +5,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.example.timetrack.service.BlacklistTokenService;
 import org.example.timetrack.service.JwtService;
 import org.example.timetrack.service.UserDetailsServiceImpl;
 import org.springframework.lang.NonNull;
@@ -24,7 +23,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsServiceImpl userDetailsService;
-    private final BlacklistTokenService blacklistTokenService;
 
     @Override
     protected void doFilterInternal(
@@ -36,13 +34,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String jwt = authHeader.substring(7);
-
-            // Проверяем, находится ли токен в черном списке
-            if (blacklistTokenService.isTokenBlacklisted(jwt)) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is blacklisted");
-                return;
-            }
-
             String username = jwtService.extractUsername(jwt);
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

@@ -18,7 +18,6 @@ public class AuthService {
     private final UserRepository userRepository;
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
-    private final BlacklistTokenService blacklistTokenService;
 
     public String authenticate(AuthDTO authDTO) {
         Optional<User> userOpt = userRepository.findByUsername(authDTO.getUsername());
@@ -45,13 +44,6 @@ public class AuthService {
     }
 
     public boolean logout(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
-            blacklistTokenService.blacklistToken(token);
-            return true;
-        }
-        return false;
+        return true;
     }
 }
