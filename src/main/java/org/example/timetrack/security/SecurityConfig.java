@@ -25,13 +25,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .anyRequest().authenticated()
+                .csrf(AbstractHttpConfigurer::disable)  // Отключаем CSRF, так как это не нужно для Stateless API с JWT
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // Настроим сессии на Stateless
+                .authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/api/auth/**").permitAll()  // Разрешаем доступ к этим эндпоинтам без аутентификации
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")  // Доступ только для администраторов
+                        .anyRequest().authenticated()  // Требуем аутентификацию для всех остальных запросов
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);  // Добавляем фильтр аутентификации JWT
 
         return http.build();
     }
@@ -46,6 +48,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder();  // Используем BCrypt для хеширования паролей
     }
 }

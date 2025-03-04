@@ -1,6 +1,5 @@
 package org.example.timetrack.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.timetrack.dto.AuthDTO;
 import org.example.timetrack.dto.UserDTO;
@@ -27,10 +26,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
-        boolean success = authService.logout(request);
-        return success
-                ? ResponseEntity.ok("Logged out successfully")
-                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No token found in Authorization header");
+    public ResponseEntity<String> logout() {
+        return ResponseEntity.ok("Logged out successfully");
     }
 }
