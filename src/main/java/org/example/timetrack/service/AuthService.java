@@ -7,10 +7,14 @@ import org.example.timetrack.dto.UserDTO;
 import org.example.timetrack.entity.User;
 import org.example.timetrack.repository.UserRepository;
 import org.example.timetrack.security.JwtUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 import java.util.Optional;
 
+@CrossOrigin(maxAge = 3600)
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -43,7 +47,7 @@ public class AuthService {
         return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
     }
 
-    public boolean logout(HttpServletRequest request) {
-        return true;
+    public void logout(HttpServletRequest request) {
+        SecurityContextHolder.clearContext(); // Очищаем сессию пользователя
     }
 }

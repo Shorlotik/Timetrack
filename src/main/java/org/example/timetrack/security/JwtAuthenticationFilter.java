@@ -32,15 +32,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        String authHeader = request.getHeader("Authorization");
+        String path = request.getServletPath();
 
+        if (path.equals("/api/auth/login") || path.equals("/api/auth/register")) {
+            filterChain.doFilter(request, response);
+            return; //  Пропускаем login/register без проверки JWT
+        }
+
+        String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            logger.warn("Authorization header is missing or incorrect");
             filterChain.doFilter(request, response);
             return;
         }
 
-        String jwt = authHeader.substring(7);  // Извлекаем токен
+        String jwt = authHeader.substring(7);
         String username = jwtUtils.extractUsername(jwt);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -52,11 +57,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-            } else {
-                logger.warn("JWT is invalid or expired for user: {}", username);
             }
         }
 
         filterChain.doFilter(request, response);
     }
+
 }

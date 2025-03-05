@@ -1,5 +1,6 @@
 package org.example.timetrack.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,18 +26,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)  // Отключаем CSRF, так как это не нужно для Stateless API с JWT
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // Настроим сессии на Stateless
-                .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/auth/**").permitAll()  // Разрешаем доступ к этим эндпоинтам без аутентификации
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")  // Доступ только для администраторов
-                        .anyRequest().authenticated()  // Требуем аутентификацию для всех остальных запросов
+                .csrf(AbstractHttpConfigurer::disable)  //  Отключаем CSRF
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //  Без сессий
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**").permitAll() //  Разрешаем login/register
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN") //  Доступ только для админов
+                        .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);  // Добавляем фильтр аутентификации JWT
+                .logout(logout -> logout
+                        .logoutUrl("/api/auth/logout")
+                        .logoutSuccessHandler((request, response, authentication) -> response.setStatus(HttpServletResponse.SC_OK))
+                )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); //  Добавляем JWT фильтр
 
         return http.build();
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager() {
