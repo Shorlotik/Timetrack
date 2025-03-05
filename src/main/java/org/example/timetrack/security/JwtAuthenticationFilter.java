@@ -34,11 +34,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         String path = request.getServletPath();
 
-        if (path.equals("/api/auth/login") || path.equals("/api/auth/register")) {
+        // Пропускаем запросы на login и register без проверки JWT
+        if (path.startsWith("/api/auth/")) {
             filterChain.doFilter(request, response);
-            return; //  Пропускаем login/register без проверки JWT
+            return;
         }
 
+        // Проверяем наличие Authorization header с токеном
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);

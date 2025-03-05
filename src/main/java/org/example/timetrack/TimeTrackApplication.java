@@ -14,8 +14,15 @@ public class TimeTrackApplication {
         Dotenv dotenv = Dotenv.load();
 
         // Устанавливаем переменные окружения
-        System.setProperty("SPRING_DATASOURCE_PASSWORD", dotenv.get("SPRING_DATASOURCE_PASSWORD"));
-        System.setProperty("JWT_SECRET", dotenv.get("JWT_SECRET"));
+        String dbPassword = dotenv.get("SPRING_DATASOURCE_PASSWORD");
+        String jwtSecret = dotenv.get("JWT_SECRET");
+
+        if (dbPassword == null || jwtSecret == null) {
+            throw new IllegalStateException("Required environment variables not found");
+        }
+
+        System.setProperty("SPRING_DATASOURCE_PASSWORD", dbPassword);
+        System.setProperty("JWT_SECRET", jwtSecret);
 
         SpringApplication.run(TimeTrackApplication.class, args);
     }

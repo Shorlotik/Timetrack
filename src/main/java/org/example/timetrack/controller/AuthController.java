@@ -16,16 +16,19 @@ public class AuthController {
 
     private final AuthService authService;
 
+    // Логин пользователя
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody AuthDTO authDTO) {
         return ResponseEntity.ok(authService.authenticate(authDTO));
     }
 
+    // Регистрация нового пользователя
     @PostMapping("/register")
     public ResponseEntity<UserDTO> register(@RequestBody UserDTO userDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(userDTO));
     }
 
+    // Выход пользователя
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request) {
         authService.logout(request);
