@@ -19,7 +19,9 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
 
+    // Создание проекта
     public ProjectDTO createProject(ProjectDTO projectDTO) {
+        // Проверяем, существует ли пользователь с таким ID
         User user = userRepository.findById(projectDTO.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -32,17 +34,20 @@ public class ProjectService {
         return convertToDTO(savedProject);
     }
 
+    // Получение всех проектов
     public List<ProjectDTO> getAllProjects() {
         return projectRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
+    // Получение проекта по ID
     public Optional<ProjectDTO> getProjectById(Long id) {
         return projectRepository.findById(id)
                 .map(this::convertToDTO);
     }
 
+    // Обновление проекта
     public Optional<ProjectDTO> updateProject(Long id, ProjectDTO projectDTO) {
         return projectRepository.findById(id).map(existingProject -> {
             existingProject.setName(projectDTO.getName());
@@ -60,6 +65,7 @@ public class ProjectService {
         });
     }
 
+    // Удаление проекта
     public boolean deleteProject(Long id) {
         if (projectRepository.existsById(id)) {
             projectRepository.deleteById(id);
@@ -68,21 +74,24 @@ public class ProjectService {
         return false;
     }
 
+    // Преобразование проекта в DTO
     private ProjectDTO convertToDTO(Project project) {
         return new ProjectDTO(
                 project.getId(),
                 project.getName(),
                 project.getDescription(),
-                project.getUser().getId()
+                project.getUser() != null ? project.getUser().getId() : null // Проверка на null для user
         );
     }
 
+    // Получение проектов пользователя
     public List<ProjectDTO> getProjectsByUser(Long userId) {
         return projectRepository.findByUserId(userId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
+    // Поиск проектов по названию
     public List<ProjectDTO> searchProjectsByName(String name) {
         return projectRepository.findByNameContainingIgnoreCase(name).stream()
                 .map(this::convertToDTO)

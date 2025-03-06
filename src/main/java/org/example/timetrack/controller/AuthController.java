@@ -1,6 +1,5 @@
 package org.example.timetrack.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.timetrack.dto.AuthDTO;
 import org.example.timetrack.dto.UserDTO;
@@ -30,8 +29,8 @@ public class AuthController {
 
     // Выход пользователя
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
-        authService.logout(request);
+    public ResponseEntity<String> logout() {
+        authService.logout();
         return ResponseEntity.ok("Logged out successfully");
     }
 }

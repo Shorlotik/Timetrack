@@ -3,7 +3,9 @@ package org.example.timetrack.service;
 import lombok.RequiredArgsConstructor;
 import org.example.timetrack.dto.UserDTO;
 import org.example.timetrack.entity.User;
+import org.example.timetrack.entity.Role;
 import org.example.timetrack.repository.UserRepository;
+import org.example.timetrack.repository.RoleRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     public UserDTO createUser(UserDTO userDTO) {
@@ -28,17 +31,15 @@ public class UserService {
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
 
-        // Устанавливаем роли через Set
-        user.setRoles(Set.of());  // Используем Set вместо List
+        // Устанавливаем роль (например, "USER")
+        Role userRole = roleRepository.findByName("ROLE_USER").orElseThrow(() -> new RuntimeException("Role not found"));
+        user.setRoles(Set.of(userRole));
 
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
         userRepository.save(user);
 
-        // Получаем первую роль корректно
-        String firstRole = String.valueOf(user.getRoles().iterator().next());
-
-        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), firstRole);
+        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), userRole); // Возвращаем роль как часть DTO
     }
 
     public List<UserDTO> getAllUsers() {
@@ -47,7 +48,7 @@ public class UserService {
                         user.getId(),
                         user.getUsername(),
                         user.getEmail(),
-                        user.getRoles().iterator().next()  // Получаем первую роль корректно
+                        user.getRoles().iterator().next().getName()  // Получаем имя первой роли
                 ))
                 .collect(Collectors.toList());
     }
@@ -58,7 +59,7 @@ public class UserService {
                         user.getId(),
                         user.getUsername(),
                         user.getEmail(),
-                        user.getRoles().iterator().next()  // Получаем первую роль корректно
+                        user.getRoles().iterator().next().getName()  // Получаем имя первой роли
                 ));
     }
 
@@ -70,7 +71,7 @@ public class UserService {
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
-                user.getRoles().iterator().next()  // Получаем первую роль корректно
+                user.getRoles().iterator().next().getName()  // Получаем имя первой роли
         );
     }
 
@@ -81,8 +82,9 @@ public class UserService {
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
 
-        // Обновляем роли
-        user.setRoles(Set.of());
+        // Обновляем роль
+        Role userRole = roleRepository.findByName(userDTO.getRole()).orElseThrow(() -> new RuntimeException("Role not found"));
+        user.setRoles(Set.of(userRole));
 
         if (userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
@@ -94,10 +96,9 @@ public class UserService {
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
-                user.getRoles().iterator().next()  // Получаем первую роль корректно
+                user.getRoles().iterator().next().getName()  // Получаем имя первой роли
         );
     }
-
 
     public boolean deleteUser(Long id) {
         if (!userRepository.existsById(id)) {

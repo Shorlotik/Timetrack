@@ -26,7 +26,6 @@ public class RecordService {
         this.projectRepository = projectRepository;
     }
 
-    // Старт трекинга
     public Record startTracking(Long projectId, String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -38,10 +37,11 @@ public class RecordService {
         record.setStartTime(LocalDateTime.now());
         record.setUser(user);
         record.setProject(project);
+
+        // Сохраняем запись
         return recordRepository.save(record);
     }
 
-    // Завершение трекинга
     public Record finishTracking(Long projectId, String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -49,56 +49,48 @@ public class RecordService {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Project not found"));
 
-        // Получаем последнюю запись по пользователю и проекту
         Record record = recordRepository.findTopByUserAndProjectOrderByStartTimeDesc(user, project)
                 .orElseThrow(() -> new RuntimeException("Record not found"));
 
         LocalDateTime finishTime = LocalDateTime.now();
         record.setFinishTime(finishTime);
 
-        // Рассчитываем продолжительность
         Duration duration = Duration.between(record.getStartTime(), finishTime);
         record.setDuration(duration);
 
+        // Сохраняем обновленную запись
         return recordRepository.save(record);
     }
 
-    // Получить все записи
     public List<Record> getAllRecords() {
         return recordRepository.findAll();
     }
 
-    // Получить запись по ID
     public Record getRecordById(Long id) {
         return recordRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Record not found"));
     }
 
-    // Получить записи определенного пользователя
     public List<Record> getRecordsByUser(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return recordRepository.findByUser(user);
     }
 
-    // Получить записи по проекту
     public List<Record> getRecordsByProject(Long projectId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Project not found"));
         return recordRepository.findByProject(project);
     }
 
-    // Получить записи за определенный период времени
     public List<Record> getRecordsBetweenDates(LocalDateTime startDate, LocalDateTime endDate) {
         return recordRepository.findByStartTimeBetween(startDate, endDate);
     }
 
-    // Обновить запись с использованием DTO
     public Record updateRecord(Long id, RecordDTO updatedRecordDTO) {
         Record existingRecord = recordRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Record not found"));
 
-        // Маппинг данных из DTO на сущность
         existingRecord.setStartTime(updatedRecordDTO.getStartTime());
         existingRecord.setFinishTime(updatedRecordDTO.getFinishTime());
         existingRecord.setDuration(Duration.ofDays(updatedRecordDTO.getDuration()));
@@ -107,17 +99,16 @@ public class RecordService {
                 .orElseThrow(() -> new RuntimeException("Project not found"));
         existingRecord.setProject(project);
 
+        // Сохраняем обновленную запись
         return recordRepository.save(existingRecord);
     }
 
-    // Удалить запись
     public void deleteRecord(Long id) {
         Record record = recordRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Record not found"));
         recordRepository.delete(record);
     }
 
-    // Удалить все записи пользователя
     public void deleteRecordsByUser(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));

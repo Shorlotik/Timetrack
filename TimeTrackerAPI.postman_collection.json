@@ -1,6 +1,5 @@
 {
   "info": {
-    "_postman_id": "your-unique-id",
     "name": "Time Tracker API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -12,15 +11,9 @@
           "name": "Login",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"john_doe\",\n  \"password\": \"password123\"\n}"
+              "raw": "{\n  \"username\": \"string\",\n  \"password\": \"string\"\n}"
             },
             "url": {
               "raw": "http://localhost:8080/api/auth/login",
@@ -33,15 +26,9 @@
           "name": "Register",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"new_user\",\n  \"password\": \"password123\",\n  \"email\": \"user@example.com\"\n}"
+              "raw": "{\n  \"username\": \"string\",\n  \"password\": \"string\",\n  \"email\": \"string\",\n  \"role\": \"USER\"\n}"
             },
             "url": {
               "raw": "http://localhost:8080/api/auth/register",
@@ -54,7 +41,6 @@
           "name": "Logout",
           "request": {
             "method": "POST",
-            "header": [],
             "url": {
               "raw": "http://localhost:8080/api/auth/logout",
               "host": ["http://localhost:8080"],
@@ -71,15 +57,9 @@
           "name": "Create Project",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Project A\",\n  \"description\": \"This is project A\"\n}"
+              "raw": "{\n  \"name\": \"string\",\n  \"description\": \"string\",\n  \"userId\": 1\n}"
             },
             "url": {
               "raw": "http://localhost:8080/api/projects",
@@ -92,11 +72,75 @@
           "name": "Get All Projects",
           "request": {
             "method": "GET",
-            "header": [],
             "url": {
               "raw": "http://localhost:8080/api/projects",
               "host": ["http://localhost:8080"],
               "path": ["api", "projects"]
+            }
+          }
+        },
+        {
+          "name": "Get Project by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/projects/1",
+              "host": ["http://localhost:8080"],
+              "path": ["api", "projects", "1"]
+            }
+          }
+        },
+        {
+          "name": "Update Project",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"updatedName\",\n  \"description\": \"updatedDescription\",\n  \"userId\": 1\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/projects/1",
+              "host": ["http://localhost:8080"],
+              "path": ["api", "projects", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Project",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:8080/api/projects/1",
+              "host": ["http://localhost:8080"],
+              "path": ["api", "projects", "1"]
+            }
+          }
+        },
+        {
+          "name": "Search Projects by Name",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/projects/search?name=TestProject",
+              "host": ["http://localhost:8080"],
+              "path": ["api", "projects", "search"],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "TestProject"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User Projects",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/projects/user/1",
+              "host": ["http://localhost:8080"],
+              "path": ["api", "projects", "user", "1"]
             }
           }
         }
@@ -109,20 +153,14 @@
           "name": "Start Tracking",
           "request": {
             "method": "POST",
-            "header": [],
             "url": {
-              "raw": "http://localhost:8080/api/records/start?projectId=1&username=john_doe",
-              "host": ["http://localhost:8080"],
+              "raw": "http://localhost:8080/api/records/start?projectId=1&username=testuser",
+              "host": ["localhost"],
+              "port": "8080",
               "path": ["api", "records", "start"],
               "query": [
-                {
-                  "key": "projectId",
-                  "value": "1"
-                },
-                {
-                  "key": "username",
-                  "value": "john_doe"
-                }
+                { "key": "projectId", "value": "1" },
+                { "key": "username", "value": "testuser" }
               ]
             }
           }
@@ -131,21 +169,119 @@
           "name": "Finish Tracking",
           "request": {
             "method": "POST",
-            "header": [],
             "url": {
-              "raw": "http://localhost:8080/api/records/finish?projectId=1&username=john_doe",
-              "host": ["http://localhost:8080"],
+              "raw": "http://localhost:8080/api/records/finish?projectId=1&username=testuser",
+              "host": ["localhost"],
+              "port": "8080",
               "path": ["api", "records", "finish"],
               "query": [
-                {
-                  "key": "projectId",
-                  "value": "1"
-                },
-                {
-                  "key": "username",
-                  "value": "john_doe"
-                }
+                { "key": "projectId", "value": "1" },
+                { "key": "username", "value": "testuser" }
               ]
+            }
+          }
+        },
+        {
+          "name": "Get All Records",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/records",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "records"]
+            }
+          }
+        },
+        {
+          "name": "Get Records by User",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/records/user/testuser",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "records", "user", "testuser"]
+            }
+          }
+        },
+        {
+          "name": "Get Records by Project",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/records/project/1",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "records", "project", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Record by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/records/1",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "records", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Records Between Dates",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/records/between?startDate=2024-03-01T00:00:00Z&endDate=2024-03-05T23:59:59Z",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "records", "between"],
+              "query": [
+                { "key": "startDate", "value": "2025-03-01T00:00:00Z" },
+                { "key": "endDate", "value": "2025-03-05T23:59:59Z" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Record",
+          "request": {
+            "method": "PATCH",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startTime\": \"2025-03-01T12:00:00\",\n  \"finishTime\": \"2025-03-01T14:00:00\",\n  \"duration\": 120,\n  \"projectId\": 1\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/records/1",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "records", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Record",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:8080/api/records/1",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "records", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete All Records by User",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:8080/api/records/user/testuser",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "records", "user", "testuser"]
             }
           }
         }
@@ -155,13 +291,29 @@
       "name": "Users",
       "item": [
         {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"string\",\n  \"password\": \"string\",\n  \"email\": \"string\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/users",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "users"]
+            }
+          }
+        },
+        {
           "name": "Get User By ID",
           "request": {
             "method": "GET",
-            "header": [],
             "url": {
               "raw": "http://localhost:8080/api/users/1",
-              "host": ["http://localhost:8080"],
+              "host": ["localhost"],
+              "port": "8080",
               "path": ["api", "users", "1"]
             }
           }
@@ -170,11 +322,52 @@
           "name": "Get All Users",
           "request": {
             "method": "GET",
-            "header": [],
             "url": {
               "raw": "http://localhost:8080/api/users",
-              "host": ["http://localhost:8080"],
+              "host": ["localhost"],
+              "port": "8080",
               "path": ["api", "users"]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"newName\",\n  \"email\": \"newEmail@example.com\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/users/1",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "users", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:8080/api/users/1",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "users", "1"]
+            }
+          }
+        },
+        {
+          "name": "Find User by Username",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/users/find?username=testuser",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "users", "find"],
+              "query": [{ "key": "username", "value": "testuser" }]
             }
           }
         }

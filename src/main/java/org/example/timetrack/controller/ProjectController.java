@@ -19,14 +19,21 @@ public class ProjectController {
     // Создание проекта
     @PostMapping
     public ResponseEntity<ProjectDTO> createProject(@RequestBody ProjectDTO projectDTO) {
-        ProjectDTO createdProject = projectService.createProject(projectDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdProject);
+        try {
+            ProjectDTO createdProject = projectService.createProject(projectDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdProject);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // В случае ошибки с пользователем возвращаем 404
+        }
     }
 
     // Получение всех проектов
     @GetMapping
     public ResponseEntity<List<ProjectDTO>> getAllProjects() {
         List<ProjectDTO> projects = projectService.getAllProjects();
+        if (projects.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok(projects);
     }
 
@@ -41,28 +48,42 @@ public class ProjectController {
     // Обновление проекта
     @PutMapping("/{id}")
     public ResponseEntity<ProjectDTO> updateProject(@PathVariable Long id, @RequestBody ProjectDTO projectDTO) {
-        return projectService.updateProject(id, projectDTO)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        try {
+            return projectService.updateProject(id, projectDTO)
+                    .map(ResponseEntity::ok)
+                    .orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Ошибка с пользователем
+        }
     }
 
     // Удаление проекта
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
-        return projectService.deleteProject(id) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+        boolean deleted = projectService.deleteProject(id);
+        if (deleted) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
     // Поиск проектов по названию
     @GetMapping("/search")
     public ResponseEntity<List<ProjectDTO>> searchProjectsByName(@RequestParam String name) {
         List<ProjectDTO> projects = projectService.searchProjectsByName(name);
-        return projects.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(projects);
+        if (projects.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(projects);
     }
 
     // Получение проектов пользователя
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<ProjectDTO>> getProjectsByUser(@PathVariable Long userId) {
         List<ProjectDTO> projects = projectService.getProjectsByUser(userId);
-        return projects.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(projects);
+        if (projects.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(projects);
     }
 }

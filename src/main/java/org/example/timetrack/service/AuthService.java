@@ -50,14 +50,19 @@ public class AuthService {
         user.setEmail(userDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
-        Role userRole = roleRepository.findByName("USER");
-        if (userRole == null) {
+        // Получаем роль из репозитория по имени, переданному в DTO
+        Optional<Role> optionalRole = roleRepository.findByName(userDTO.getRole());
+        Role userRole;
+        if (optionalRole.isPresent()) {
+            userRole = optionalRole.get();
+        } else {
+            // Если роль не найдена, создаем новую роль
             userRole = new Role();
-            userRole.setName("USER");
+            userRole.setName(userDTO.getRole()); // Можно добавить логику для проверки валидных ролей
             roleRepository.save(userRole);
         }
 
-        // Теперь роли — это Set<Role>
+        // Присваиваем пользователю роль
         user.setRoles(Set.of(userRole));
 
         userRepository.save(user);
@@ -65,10 +70,8 @@ public class AuthService {
         return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), userRole.getName());
     }
 
-
-
-    public void logout(HttpServletRequest request) {
-        // Очистка контекста безопасности
+    // Логика выхода пользователя
+    public void logout() {
         SecurityContextHolder.clearContext();
     }
 }

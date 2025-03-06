@@ -12,22 +12,22 @@ public class UserDTO {
     private Long id;
     private String username;
     private String email;
-    private String role;
+    private String role; // Оставим строку, если используем только одну роль
     private String password;
 
-
-    public UserDTO(Long id, String username, String email, String s) {
+    // Конструктор с одной ролью как строкой
+    public UserDTO(Long id, String username, String email, String role) {
         this.id = id;
         this.username = username;
         this.email = email;
-        this.role = s;
+        this.role = role;
     }
 
-    public UserDTO(Long id, String username, String email, Role next) {
+    // Конструктор с Role объектом
+    public UserDTO(Long id, String username, String email, Role role) {
         this.id = id;
         this.username = username;
         this.email = email;
-        this.role = next.getName();
+        this.role = role.getName(); // Получаем имя роли
     }
 }
-

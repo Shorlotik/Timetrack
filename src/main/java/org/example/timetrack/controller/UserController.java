@@ -1,10 +1,9 @@
 package org.example.timetrack.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.timetrack.dto.AuthDTO;
 import org.example.timetrack.dto.UserDTO;
-import org.example.timetrack.service.AuthService;
 import org.example.timetrack.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,13 +16,12 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
-    private final AuthService authService;
 
     // CREATE (Регистрация пользователя)
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
         UserDTO createdUser = userService.createUser(userDTO);
-        return ResponseEntity.status(201).body(createdUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     // READ ONE (Получить пользователя по ID)
@@ -52,13 +50,6 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         boolean deleted = userService.deleteUser(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
-    }
-
-    // LOGIN (Аутентификация пользователя)
-    @PostMapping("/login")
-    public ResponseEntity<String> authenticate(@RequestBody AuthDTO authDTO) {
-        String token = authService.authenticate(authDTO);
-        return ResponseEntity.ok(token);
     }
 
     // FIND BY USERNAME (Поиск пользователя по имени)
