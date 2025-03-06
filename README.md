@@ -44,7 +44,7 @@ mvn liquibase:update
 mvn clean install
 java -jar target/timetrack-api.jar
 ```
-- Установка и настройка для Linux:
+### Linux:
 ### 1. Установите PostgreSQL и создайте базу данных timetracker:
 
 - Используйте команду для установки:
@@ -85,17 +85,14 @@ java -jar target/timetrack-api.jar
 - Для Linux, следуйте инструкциям на [официальном сайте](https://docs.docker.com/engine/install/) Docker.
 ### 2. Соберите Docker-образ:
 ```
-docker build -t timetrack-api
+docker-compose up --build -d
 ```
-### 3. Запустите контейнер с PostgreSQL и приложением:
-```
-docker-compose up -d
-```
-- Это создаст и запустит два контейнера:
+- Команда docker-compose up --build -d автоматически соберет Docker-образ и запустит контейнеры:
 
 - PostgreSQL для базы данных.
+
 - Time Tracker API для сервиса.
-### 4. Проверьте, что контейнеры работают:
+### 3. Проверка что контейнеры работают:
 ```
 docker ps
 ```
@@ -104,16 +101,33 @@ docker ps
 ### Аутентификация
 - `POST /api/auth/login` - Вход пользователя, получение JWT-токена.
 - `POST /api/auth/register` - Регистрация нового пользователя.
+- `POST /api/auth/loguot` - Выход пользователя.
 ### Управление временем
-- `POST /api/time/start` - Начало трекинга времени.
-- `POST /api/time/finish` - Завершение трекинга времени.
+- `POST /api/records/start?projectId=1&username=testuser` - Начало трекинга времени. (testuser поменять на совего пользователя)
+- `POST /api/records/finish?projectId=1&username=testuser` - Завершение трекинга времени. (testuser поменять на совего пользователя)
+- `GET /api/records` - Вывод всех трекингов времени
+- `GET /api/records/user/testuser` - Вывод времени отпределенного пользователя (testuser поменять на совего пользователя)
+- `GET /api/records/project/{id}` - Вывод времени проекта ({id}    поменять на id проекта)
+- `GET /api/records/{id}` - Вывод трекинга времени по ID (заменить на нужный ID)
+- `GET /api/records/between?startDate=2025-03-01T00:00:00Z&endDate=2025-03-05T23:59:59Z` - Получение трекинга времени на отпределенной дате (заменить на нужную дату из finsh)
+- `PATCH /api/records/{id}` - Обновление трекинга времени (заменить на нужны id)
+- `DELETE /api/records/{id}` - Удаление определенного трекинга времени (заменить на нужный id)
+- `DELETE /api/records/user/testuser` - Удаление пользователя из трекинга времени (testuser поменять на совего пользователя)
 ### Управление проектами
 - `GET /api/projects` - Получение списка проектов.
 - `POST /api/projects` - Создание нового проекта (доступно только администратору).
+- `GET /api/projects/{id}` - Получение списка проектов по id. (заменить на нужный id)
+- `PUT /api/projects/{id}` - Обновление данных проекта по id. (заменить на нужный id)
+- `DELETE /api/projects/{id}` - Удаление проекта.
+- `GET /api/projects/search?name=TestProject` - Поиск проекта по названию. (TestProject заменить на нужное название проекта)
+- `GET /api/projects/user/{id}` - Получение проектов пользователя. (заменить на нужное id)
 ### Пользователи
+- `POST /api/users` - Создание пользователя. (только для админов)
+- `GET /api/users/{id}` - Получить пользователя по ID.
 - `GET /api/users` - Получение списка пользователей (только для админов).
 - `PATCH /api/users/{id}` - Обновление данных пользователя.
 - `DELETE /api/users/{id}` - Удаление пользователя.
+- `GET /api/users/find?username=testuser` - Поиск пользователя по имени. (testuser поменять на совего пользователя)
 ## Роли пользователей
 - `USER` - Может отслеживать время и просматривать свои записи.
 - `ADMIN` - Управляет пользователями, проектами и ролями.
