@@ -26,14 +26,30 @@ Time Tracker API - это сервис для управления времен�
 
 ### 2. Укажите настройки базы данных в `application.yml`:
    ```yaml
-   spring:
-     datasource:
-       url: jdbc:postgresql://localhost:5432/timetracker
-       username: yourusername
-       password: yourpassword
-     jpa:
-       hibernate:
-         ddl-auto: validate
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/timetracker
+    username: postgres
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+
+application:
+  jwt:
+    secret: ${JWT_SECRET:default_secret_key}
+    expiration: ${JWT_EXPIRATION:3600000}  # 1 час по умолчанию
 ```
 ### 3. Запустите миграции Liquibase (если используется):
 ```
