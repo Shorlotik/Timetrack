@@ -42,7 +42,7 @@ mvn liquibase:update
 ### 4. Соберите и запустите приложение:
 ```
 mvn clean install
-java -jar target/timetrack-api.jar
+java -jar target/timetrack.jar
 ```
 ### Linux:
 ### 1. Установите PostgreSQL и создайте базу данных timetracker:
@@ -75,7 +75,7 @@ mvn liquibase:update
 ### 4. Соберите и запустите приложение:
 ```
 mvn clean install
-java -jar target/timetrack-api.jar
+java -jar target/timetrack.jar
 ```
 ## 2. Запуск с Docker
 - Общие шаги для Windows и Linux:
