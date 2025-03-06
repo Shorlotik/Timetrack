@@ -84,8 +84,13 @@ java -jar target/timetrack.jar
 - Для Windows, скачайте и установите Docker Desktop с [официального сайта](https://docs.docker.com/desktop/setup/install/windows-install/).
 - Для Linux, следуйте инструкциям на [официальном сайте](https://docs.docker.com/engine/install/) Docker.
 ### 2. Соберите Docker-образ:
+# Windows
 ```
 docker-compose up --build -d
+```
+# Linux
+```
+sudo docker-compose up --build -d
 ```
 - Команда docker-compose up --build -d автоматически соберет Docker-образ и запустит контейнеры:
 
