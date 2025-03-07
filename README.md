@@ -28,7 +28,7 @@ Time Tracker API - это сервис для управления времен�
    ```yaml
 spring:
   datasource:
-    url: jdbc:postgresql://db:5432/timetracker  # db, а не localhost
+    url: jdbc:postgresql://db:5432/timetracker  
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -84,7 +84,7 @@ CREATE DATABASE timetracker;
    ```yaml
 spring:
   datasource:
-    url: jdbc:postgresql://db:5432/timetracker  # db, а не localhost
+    url: jdbc:postgresql://db:5432/timetracker 
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
