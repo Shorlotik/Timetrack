@@ -51,7 +51,7 @@ application:
     secret: ${JWT_SECRET}
     expiration: ${JWT_EXPIRATION:3600000}
 ```
-### 3. Укажите настройки данных в `env.example`:
+### 3. Укажите настройки данных в `env.example`: (Нужно создать .env и перевести данные)
 ```
 SPRING_DATASOURCE_USERNAME=timetracker
 SPRING_DATASOURCE_PASSWORD=yourpassword (заменить на свой пароль)
@@ -107,7 +107,7 @@ application:
     secret: ${JWT_SECRET}
     expiration: ${JWT_EXPIRATION:3600000}
 ```
-### 3. Укажите настройки данных в `env.example`:
+### 3. Укажите настройки данных в `env.example`: (Нужно создать .env и перевести данные)
 ```
 SPRING_DATASOURCE_USERNAME=timetracker
 SPRING_DATASOURCE_PASSWORD=yourpassword (заменить на свой пароль)
