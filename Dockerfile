@@ -4,12 +4,11 @@ FROM openjdk:17-jdk-slim
 # Устанавливаем рабочую директорию внутри контейнера
 WORKDIR /app
 
-# Копируем JAR-файл в контейнер
+# Копируем скомпилированный JAR-файл
 COPY target/timetrack-1.0.0.jar timetrack-1.0.0.jar
 
-COPY .env /app/.env
-
-COPY pom.xml /app/pom.xml
+# Копируем файл .env (чтобы переменные загружались)
+COPY .env.example .env.example
 
 # Запуск приложения
 ENTRYPOINT ["java", "-jar", "timetrack-1.0.0.jar"]

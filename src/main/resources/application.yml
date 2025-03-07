@@ -1,7 +1,7 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/timetracker
-    username: postgres
+    url: jdbc:postgresql://db:5432/timetracker  # db, а не localhost
+    username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
@@ -20,5 +20,5 @@ spring:
 
 application:
   jwt:
-    secret: ${JWT_SECRET:default_secret_key}
-    expiration: ${JWT_EXPIRATION:3600000}  # 1 час по умолчанию
+    secret: ${JWT_SECRET}
+    expiration: ${JWT_EXPIRATION:3600000}
