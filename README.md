@@ -28,8 +28,8 @@ Time Tracker API - это сервис для управления времен�
    ```yaml
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/timetracker
-    username: postgres
+    url: jdbc:postgresql://db:5432/timetracker  # db, а не localhost
+    username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
@@ -48,17 +48,24 @@ spring:
 
 application:
   jwt:
-    secret: ${JWT_SECRET:default_secret_key}
-    expiration: ${JWT_EXPIRATION:3600000}  # 1 час по умолчанию
+    secret: ${JWT_SECRET}
+    expiration: ${JWT_EXPIRATION:3600000}
 ```
-### 3. Запустите миграции Liquibase (если используется):
+### 3. Укажите настройки данных в `env.example`:
+```
+SPRING_DATASOURCE_USERNAME=timetracker
+SPRING_DATASOURCE_PASSWORD=yourpassword (заменить на свой пароль)
+JWT_SECRET=Nk8dNRJjOiAlkjhioUeZk7e9fjeFi58Y3bZj8zL4iJYXcbJvFoR3Hn02j9Xcrqrl
+JWT_EXPIRATION=3600000
+
+```
+### 4. Запустите миграции Liquibase (если используется):
 ```
 mvn liquibase:update
 ```
-### 4. Соберите и запустите приложение:
+### 5. Соберите и запустите приложение:
 ```
 mvn clean install
-java -jar target/timetrack.jar
 ```
 ### Linux:
 ### 1. Установите PostgreSQL и создайте базу данных timetracker:
@@ -77,12 +84,28 @@ CREATE DATABASE timetracker;
    ```yaml
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/timetracker
-    username: yourusername
-    password: yourpassword
+    url: jdbc:postgresql://db:5432/timetracker  # db, а не localhost
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+
+application:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration: ${JWT_EXPIRATION:3600000}
 ```
 ### 3. Запустите миграции Liquibase (если используется):
 ```
@@ -91,7 +114,6 @@ mvn liquibase:update
 ### 4. Соберите и запустите приложение:
 ```
 mvn clean install
-java -jar target/timetrack.jar
 ```
 ## 2. Запуск с Docker
 - Общие шаги для Windows и Linux:
