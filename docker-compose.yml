@@ -17,7 +17,7 @@ services:
     depends_on:
       - db
     env_file:
-      - .env.example
+      - .env
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/timetracker
     ports:

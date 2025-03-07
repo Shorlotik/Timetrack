@@ -8,7 +8,7 @@ WORKDIR /app
 COPY target/timetrack-1.0.0.jar timetrack-1.0.0.jar
 
 # Копируем файл .env (чтобы переменные загружались)
-COPY .env.example .env.example
+COPY .env .env
 
 # Запуск приложения
 ENTRYPOINT ["java", "-jar", "timetrack-1.0.0.jar"]

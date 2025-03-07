@@ -7,8 +7,5 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest
 @ActiveProfiles("test")
 public class TimeTrackApplicationTests {
-    @Test
-    void contextLoads() {
-    }
 }
 
