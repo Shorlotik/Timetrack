@@ -55,7 +55,7 @@ application:
 ```
 SPRING_DATASOURCE_USERNAME=timetracker
 SPRING_DATASOURCE_PASSWORD=yourpassword (заменить на свой пароль)
-JWT_SECRET=Nk8dNRJjOiAlkjhioUeZk7e9fjeFi58Y3bZj8zL4iJYXcbJvFoR3Hn02j9Xcrqrl
+JWT_SECRET=yoursecret (заменить на свой или можно вставить из PasswordEncoderTest)
 JWT_EXPIRATION=3600000
 
 ```
@@ -107,11 +107,19 @@ application:
     secret: ${JWT_SECRET}
     expiration: ${JWT_EXPIRATION:3600000}
 ```
-### 3. Запустите миграции Liquibase (если используется):
+### 3. Укажите настройки данных в `env.example`:
+```
+SPRING_DATASOURCE_USERNAME=timetracker
+SPRING_DATASOURCE_PASSWORD=yourpassword (заменить на свой пароль)
+JWT_SECRET=yoursecret (заменить на свой)
+JWT_EXPIRATION=3600000
+
+```
+### 4. Запустите миграции Liquibase (если используется):
 ```
 mvn liquibase:update
 ```
-### 4. Соберите и запустите приложение:
+### 5. Соберите и запустите приложение:
 ```
 mvn clean install
 ```
