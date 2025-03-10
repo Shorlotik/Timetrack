@@ -115,7 +115,7 @@ JWT_EXPIRATION=3600000
 ```
 mvn clean install
 ```
-## 2. Запуск с Docker
+# 2. Запуск с Docker
 - Общие шаги для Windows и Linux:
 ### 1. Установите Docker и Docker Compose:
 
