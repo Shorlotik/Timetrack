@@ -1,14 +1,17 @@
-# Используем базовый образ OpenJDK
-FROM openjdk:17-jdk-slim
+FROM maven:3.9.9 AS build
 
-# Устанавливаем рабочую директорию внутри контейнера
 WORKDIR /app
 
-# Копируем скомпилированный JAR-файл
-COPY target/timetrack-1.0.0.jar timetrack-1.0.0.jar
+COPY . .
 
-# Копируем файл .env (чтобы переменные загружались)
+RUN mvn clean package -DskipTests
+
+FROM openjdk:17.0.2-jdk-slim
+
+WORKDIR /app
+
+COPY --from=build /app/target/timetrack-1.0.0.jar app.jar
+
 COPY .env .env
 
-# Запуск приложения
-ENTRYPOINT ["java", "-jar", "timetrack-1.0.0.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
