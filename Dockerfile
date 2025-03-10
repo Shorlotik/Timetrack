@@ -2,16 +2,17 @@ FROM maven:3.9.9 AS build
 
 WORKDIR /app
 
-COPY . .
+COPY pom.xml ./
+RUN mvn dependency:go-offline -B # зависимости (кешируется Docker)
 
-RUN mvn clean package -DskipTests
+COPY src ./src
+
+RUN mvn package -DskipTests
 
 FROM openjdk:17.0.2-jdk-slim
 
 WORKDIR /app
 
-COPY --from=build /app/target/timetrack-1.0.0.jar app.jar
-
-COPY .env .env
+COPY --from=build /app/target/*.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
