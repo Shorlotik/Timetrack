@@ -19,7 +19,9 @@ services:
     env_file:
       - .env
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/timetracker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5442/timetracker
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
     ports:
       - "8080:8080"
 
