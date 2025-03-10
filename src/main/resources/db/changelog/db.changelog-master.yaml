@@ -8,7 +8,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: bigint
+                  type: bigserial
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -32,6 +32,7 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+                  defaultValue: 'USER'
 
   - changeSet:
       id: 2
@@ -42,7 +43,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: bigint
+                  type: bigserial
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -71,7 +72,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: bigint
+                  type: bigserial
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -110,7 +111,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: bigint
+                  type: bigserial
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -130,6 +131,9 @@ databaseChangeLog:
               - column:
                   name: name
                   value: 'USER'
+        - insert:
+            tableName: role
+            columns:
               - column:
                   name: name
                   value: 'ADMIN'
@@ -139,9 +143,9 @@ databaseChangeLog:
       author: admin
       changes:
         - sql:
-            dbms: mysql
+            dbms: postgres
             splitStatements: false
             stripComments: true
             sql: |
               ALTER TABLE user
-              MODIFY COLUMN role varchar(255) DEFAULT 'USER';
+              ALTER COLUMN role SET DEFAULT 'USER';
