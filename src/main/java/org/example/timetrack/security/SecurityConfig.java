@@ -58,3 +58,4 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();  // Используем BCrypt для хеширования паролей
     }
 }
+

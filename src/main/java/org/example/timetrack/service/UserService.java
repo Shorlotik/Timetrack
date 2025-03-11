@@ -31,15 +31,16 @@ public class UserService {
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
 
-        // Устанавливаем роль (например, "USER")
-        Role userRole = roleRepository.findByName("ROLE_USER").orElseThrow(() -> new RuntimeException("Role not found"));
-        user.setRoles(Set.of(userRole));
+        // Проверка роли из DTO и установка роли
+        Role userRole = roleRepository.findByName(userDTO.getRole())
+                .orElseThrow(() -> new RuntimeException("Role not found"));
 
+        user.setRoles(Set.of(userRole));
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
         userRepository.save(user);
 
-        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), userRole); // Возвращаем роль как часть DTO
+        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), userRole.getName(), user.getPassword()); // Возвращаем роль как часть DTO
     }
 
     public List<UserDTO> getAllUsers() {
@@ -48,7 +49,8 @@ public class UserService {
                         user.getId(),
                         user.getUsername(),
                         user.getEmail(),
-                        user.getRoles().iterator().next().getName()  // Получаем имя первой роли
+                        user.getRoles().iterator().next().getName()
+                        , user.getPassword()// Получаем имя первой роли
                 ))
                 .collect(Collectors.toList());
     }
@@ -59,7 +61,8 @@ public class UserService {
                         user.getId(),
                         user.getUsername(),
                         user.getEmail(),
-                        user.getRoles().iterator().next().getName()  // Получаем имя первой роли
+                        user.getRoles().iterator().next().getName()
+                        , user.getPassword()// Получаем имя первой роли
                 ));
     }
 
@@ -71,7 +74,8 @@ public class UserService {
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
-                user.getRoles().iterator().next().getName()  // Получаем имя первой роли
+                user.getRoles().iterator().next().getName()
+                , user.getPassword()// Получаем имя первой роли
         );
     }
 
@@ -96,15 +100,20 @@ public class UserService {
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
-                user.getRoles().iterator().next().getName()  // Получаем имя первой роли
-        );
+                user.getRoles().iterator().next().getName()
+                , user.getPassword());
     }
 
     public boolean deleteUser(Long id) {
-        if (!userRepository.existsById(id)) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isEmpty()) {
             return false;
         }
-        userRepository.deleteById(id);
+
+        User user = userOptional.get();
+        user.getRoles().clear(); // Очистка ролей перед удалением
+        userRepository.delete(user);
         return true;
     }
+
 }

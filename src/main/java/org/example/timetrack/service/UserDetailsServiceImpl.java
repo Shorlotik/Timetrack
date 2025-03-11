@@ -35,8 +35,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName().toUpperCase()))
                 .collect(Collectors.toList());
 
-
-
         // Возвращаем объект UserDetails с пользователем и его ролями
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),

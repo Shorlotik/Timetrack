@@ -3,10 +3,11 @@ package org.example.timetrack.service;
 import lombok.RequiredArgsConstructor;
 import org.example.timetrack.dto.ProjectDTO;
 import org.example.timetrack.entity.Project;
-import org.example.timetrack.entity.User;  // Добавлен импорт
+import org.example.timetrack.entity.User;
 import org.example.timetrack.repository.ProjectRepository;
 import org.example.timetrack.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,8 +21,8 @@ public class ProjectService {
     private final UserRepository userRepository;
 
     // Создание проекта
+    @Transactional
     public ProjectDTO createProject(ProjectDTO projectDTO) {
-        // Проверяем, существует ли пользователь с таким ID
         User user = userRepository.findById(projectDTO.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -48,12 +49,12 @@ public class ProjectService {
     }
 
     // Обновление проекта
+    @Transactional
     public Optional<ProjectDTO> updateProject(Long id, ProjectDTO projectDTO) {
         return projectRepository.findById(id).map(existingProject -> {
             existingProject.setName(projectDTO.getName());
             existingProject.setDescription(projectDTO.getDescription());
 
-            // Проверяем, есть ли новый пользователь в обновленном проекте
             if (projectDTO.getUserId() != null && !existingProject.getUser().getId().equals(projectDTO.getUserId())) {
                 User newUser = userRepository.findById(projectDTO.getUserId())
                         .orElseThrow(() -> new RuntimeException("User not found"));
@@ -80,7 +81,7 @@ public class ProjectService {
                 project.getId(),
                 project.getName(),
                 project.getDescription(),
-                project.getUser() != null ? project.getUser().getId() : null // Проверка на null для user
+                project.getUser() != null ? project.getUser().getId() : null
         );
     }
 

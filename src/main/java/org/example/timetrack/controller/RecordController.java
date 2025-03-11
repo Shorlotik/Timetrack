@@ -37,25 +37,25 @@ public class RecordController {
     @GetMapping
     public ResponseEntity<List<Record>> getAllRecords() {
         List<Record> records = recordService.getAllRecords();
-        return ResponseEntity.ok(records);
+        return ResponseEntity.ok(records.isEmpty() ? List.of() : records); // Пустой список если нет записей
     }
 
     @GetMapping("/user/{username}")
     public ResponseEntity<List<Record>> getRecordsByUser(@PathVariable String username) {
         List<Record> records = recordService.getRecordsByUser(username);
-        return records.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(records);
+        return ResponseEntity.ok(records.isEmpty() ? List.of() : records); // Пустой список если нет записей
     }
 
     @GetMapping("/project/{projectId}")
     public ResponseEntity<List<Record>> getRecordsByProject(@PathVariable Long projectId) {
         List<Record> records = recordService.getRecordsByProject(projectId);
-        return records.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(records);
+        return ResponseEntity.ok(records.isEmpty() ? List.of() : records); // Пустой список если нет записей
     }
 
     @PatchMapping("/{recordId}")
     public ResponseEntity<Record> updateRecord(@PathVariable Long recordId, @RequestBody RecordDTO updatedRecordDTO) {
         Record updatedRecord = recordService.updateRecord(recordId, updatedRecordDTO);
-        return updatedRecord != null ? ResponseEntity.ok(updatedRecord) : ResponseEntity.notFound().build();
+        return updatedRecord != null ? ResponseEntity.ok(updatedRecord) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
     @DeleteMapping("/{recordId}")
@@ -67,13 +67,13 @@ public class RecordController {
     @GetMapping("/{recordId}")
     public ResponseEntity<Record> getRecordById(@PathVariable Long recordId) {
         Record record = recordService.getRecordById(recordId);
-        return record != null ? ResponseEntity.ok(record) : ResponseEntity.notFound().build();
+        return record != null ? ResponseEntity.ok(record) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
     @GetMapping("/between")
     public ResponseEntity<List<Record>> getRecordsBetweenDates(@RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate) {
         List<Record> records = recordService.getRecordsBetweenDates(startDate, endDate);
-        return records.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(records);
+        return ResponseEntity.ok(records.isEmpty() ? List.of() : records); // Пустой список если нет записей
     }
 
     @DeleteMapping("/user/{username}")

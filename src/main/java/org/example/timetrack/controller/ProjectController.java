@@ -23,7 +23,7 @@ public class ProjectController {
             ProjectDTO createdProject = projectService.createProject(projectDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdProject);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // В случае ошибки с пользователем возвращаем 404
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Ошибка создания проекта
         }
     }
 
@@ -31,59 +31,43 @@ public class ProjectController {
     @GetMapping
     public ResponseEntity<List<ProjectDTO>> getAllProjects() {
         List<ProjectDTO> projects = projectService.getAllProjects();
-        if (projects.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(projects);
+        return ResponseEntity.ok(projects.isEmpty() ? List.of() : projects); // Пустой список если нет проектов
     }
 
     // Получение проекта по ID
     @GetMapping("/{id}")
     public ResponseEntity<ProjectDTO> getProjectById(@PathVariable Long id) {
-        return projectService.getProjectById(id)
+        return projectService.getProjectById(id) // Обрабатываем Optional
                 .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
 
     // Обновление проекта
     @PutMapping("/{id}")
     public ResponseEntity<ProjectDTO> updateProject(@PathVariable Long id, @RequestBody ProjectDTO projectDTO) {
-        try {
-            return projectService.updateProject(id, projectDTO)
-                    .map(ResponseEntity::ok)
-                    .orElseGet(() -> ResponseEntity.notFound().build());
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Ошибка с пользователем
-        }
+        return projectService.updateProject(id, projectDTO) // Обрабатываем Optional
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
 
     // Удаление проекта
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
         boolean deleted = projectService.deleteProject(id);
-        if (deleted) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     // Поиск проектов по названию
     @GetMapping("/search")
     public ResponseEntity<List<ProjectDTO>> searchProjectsByName(@RequestParam String name) {
         List<ProjectDTO> projects = projectService.searchProjectsByName(name);
-        if (projects.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(projects);
+        return ResponseEntity.ok(projects.isEmpty() ? List.of() : projects); // Пустой список если нет проектов
     }
 
     // Получение проектов пользователя
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<ProjectDTO>> getProjectsByUser(@PathVariable Long userId) {
         List<ProjectDTO> projects = projectService.getProjectsByUser(userId);
-        if (projects.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(projects);
+        return ResponseEntity.ok(projects.isEmpty() ? List.of() : projects);
     }
 }

@@ -19,7 +19,6 @@ public class JwtUtils {
     private final Key secretKey;
     private final long expirationTime;
 
-    // Конструктор с внедрением зависимостей
     public JwtUtils(@Value("${application.jwt.secret}") String secret,
                     @Value("${application.jwt.expiration}") String expiration) {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
@@ -37,7 +36,7 @@ public class JwtUtils {
                 .compact();
     }
 
-    // Извлечение имени пользователя из токена
+    // Извлечение имени пользователя
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -45,34 +44,26 @@ public class JwtUtils {
     // Проверка валидности токена
     public boolean isTokenValid(String token, UserDetails userDetails) {
         String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
-    // Проверка, не истёк ли токен
+    // Проверка срока действия токена
     private boolean isTokenExpired(String token) {
         return extractClaim(token, Claims::getExpiration).before(new Date());
     }
 
-    // Извлечение конкретного claim-а из токена
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    // Получение claim из токена
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
     // Разбор токена и получение всех claims
     private Claims extractAllClaims(String token) {
-        try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-        } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            throw new IllegalArgumentException("Expired token", e);
-        } catch (io.jsonwebtoken.MalformedJwtException e) {
-            throw new IllegalArgumentException("Invalid token", e);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid or expired token", e);
-        }
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }
