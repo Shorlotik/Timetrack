@@ -4,11 +4,12 @@ databaseChangeLog:
       author: admin
       changes:
         - createTable:
-            tableName: user
+            tableName: users
             columns:
               - column:
                   name: id
-                  type: bigserial
+                  type: bigint
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -17,6 +18,7 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+                    unique: true
               - column:
                   name: password
                   type: varchar(255)
@@ -27,23 +29,30 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+                    unique: true
               - column:
-                  name: role
+                  name: full_name
                   type: varchar(255)
-                  constraints:
-                    nullable: false
-                  defaultValue: 'USER'
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
 
   - changeSet:
       id: 2
       author: admin
       changes:
         - createTable:
-            tableName: project
+            tableName: projects
             columns:
               - column:
                   name: id
-                  type: bigserial
+                  type: bigint
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -52,6 +61,7 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+                    unique: true
               - column:
                   name: description
                   type: varchar(255)
@@ -60,8 +70,8 @@ databaseChangeLog:
                   type: bigint
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_user_id
-                    references: user(id)
+                    foreignKeyName: fk_projects_user
+                    references: users(id)
 
   - changeSet:
       id: 3
@@ -72,7 +82,8 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: bigserial
+                  type: bigint
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -92,26 +103,27 @@ databaseChangeLog:
                   type: bigint
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_project_id
-                    references: project(id)
+                    foreignKeyName: fk_record_project
+                    references: projects(id)
               - column:
                   name: user_id
                   type: bigint
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_user_record_id
-                    references: user(id)
+                    foreignKeyName: fk_record_user
+                    references: users(id)
 
   - changeSet:
       id: 4
       author: admin
       changes:
         - createTable:
-            tableName: role
+            tableName: roles
             columns:
               - column:
                   name: id
-                  type: bigserial
+                  type: bigint
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -120,20 +132,27 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+                    unique: true
 
   - changeSet:
       id: 5
       author: admin
       changes:
         - insert:
-            tableName: role
+            tableName: roles
             columns:
+              - column:
+                  name: id
+                  value: '1'  # Строка вместо числа
               - column:
                   name: name
                   value: 'USER'
         - insert:
-            tableName: role
+            tableName: roles
             columns:
+              - column:
+                  name: id
+                  value: '2'  # Строка вместо числа
               - column:
                   name: name
                   value: 'ADMIN'
@@ -142,10 +161,23 @@ databaseChangeLog:
       id: 6
       author: admin
       changes:
-        - sql:
-            dbms: postgres
-            splitStatements: false
-            stripComments: true
-            sql: |
-              ALTER TABLE user
-              ALTER COLUMN role SET DEFAULT 'USER';
+        - createTable:
+            tableName: user_roles
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_roles_user
+                    references: users(id)
+              - column:
+                  name: role_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_roles_role
+                    references: roles(id)
+        - addPrimaryKey:
+            tableName: user_roles
+            columnNames: user_id, role_id

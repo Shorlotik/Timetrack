@@ -15,22 +15,21 @@ public class AuthController {
 
     private final AuthService authService;
 
-    // Логин пользователя
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody AuthDTO authDTO) {
-        return ResponseEntity.ok(authService.authenticate(authDTO));
+        String token = authService.authenticate(authDTO);
+        return ResponseEntity.ok("\"" + token + "\"");
     }
 
-    // Регистрация нового пользователя
     @PostMapping("/register")
     public ResponseEntity<UserDTO> register(@RequestBody UserDTO userDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(userDTO));
+        UserDTO registeredUser = authService.register(userDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);
     }
 
-    // Выход пользователя
     @PostMapping("/logout")
-    public ResponseEntity<String> logout() {
-        authService.logout();
+    public ResponseEntity<String> logout(@RequestHeader(name = "Authorization", required = false) String authHeader) {
+        authService.logout(authHeader);
         return ResponseEntity.ok("Logged out successfully");
     }
 }
