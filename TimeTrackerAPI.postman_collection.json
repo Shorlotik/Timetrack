@@ -11,24 +11,20 @@
           "name": "Login",
           "request": {
             "method": "POST",
-            "body": {
-              "mode": "raw",
-              "raw": "{\"username\": \"string\", \"password\": \"string\"}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "headers": [
+            "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"testpassword\"\n}"
+            },
             "url": {
               "raw": "http://localhost:8080/api/auth/login",
-              "host": ["http://localhost:8080"],
+              "host": ["localhost"],
+              "port": "8080",
               "path": ["api", "auth", "login"]
             }
           }
@@ -37,24 +33,20 @@
           "name": "Register",
           "request": {
             "method": "POST",
-            "body": {
-              "mode": "raw",
-              "raw": "{\"username\": \"string\", \"password\": \"string\", \"email\": \"string@example.com\", \"role\": \"USER\"}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "headers": [
+            "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"newuser\",\n  \"password\": \"newpassword\",\n  \"email\": \"newuser@example.com\",\n  \"role\": \"USER\"\n}"
+            },
             "url": {
               "raw": "http://localhost:8080/api/auth/register",
-              "host": ["http://localhost:8080"],
+              "host": ["localhost"],
+              "port": "8080",
               "path": ["api", "auth", "register"]
             }
           }
@@ -65,7 +57,8 @@
             "method": "POST",
             "url": {
               "raw": "http://localhost:8080/api/auth/logout",
-              "host": ["http://localhost:8080"],
+              "host": ["localhost"],
+              "port": "8080",
               "path": ["api", "auth", "logout"]
             }
           }
@@ -79,24 +72,20 @@
           "name": "Create Project",
           "request": {
             "method": "POST",
-            "body": {
-              "mode": "raw",
-              "raw": "{\"name\": \"string\", \"description\": \"string\", \"userId\": 1}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "headers": [
+            "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Project\",\n  \"description\": \"Project Description\",\n  \"userId\": 1\n}"
+            },
             "url": {
               "raw": "http://localhost:8080/api/projects",
-              "host": ["http://localhost:8080"],
+              "host": ["localhost"],
+              "port": "8080",
               "path": ["api", "projects"]
             }
           }
@@ -107,7 +96,8 @@
             "method": "GET",
             "url": {
               "raw": "http://localhost:8080/api/projects",
-              "host": ["http://localhost:8080"],
+              "host": ["localhost"],
+              "port": "8080",
               "path": ["api", "projects"]
             }
           }
@@ -118,7 +108,8 @@
             "method": "GET",
             "url": {
               "raw": "http://localhost:8080/api/projects/1",
-              "host": ["http://localhost:8080"],
+              "host": ["localhost"],
+              "port": "8080",
               "path": ["api", "projects", "1"]
             }
           }
@@ -127,24 +118,20 @@
           "name": "Update Project",
           "request": {
             "method": "PUT",
-            "body": {
-              "mode": "raw",
-              "raw": "{\"name\": \"updatedName\", \"description\": \"updatedDescription\", \"userId\": 1}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "headers": [
+            "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Project\",\n  \"description\": \"Updated Description\",\n  \"userId\": 1\n}"
+            },
             "url": {
               "raw": "http://localhost:8080/api/projects/1",
-              "host": ["http://localhost:8080"],
+              "host": ["localhost"],
+              "port": "8080",
               "path": ["api", "projects", "1"]
             }
           }
@@ -155,7 +142,8 @@
             "method": "DELETE",
             "url": {
               "raw": "http://localhost:8080/api/projects/1",
-              "host": ["http://localhost:8080"],
+              "host": ["localhost"],
+              "port": "8080",
               "path": ["api", "projects", "1"]
             }
           }
@@ -166,7 +154,8 @@
             "method": "GET",
             "url": {
               "raw": "http://localhost:8080/api/projects/search?name=TestProject",
-              "host": ["http://localhost:8080"],
+              "host": ["localhost"],
+              "port": "8080",
               "path": ["api", "projects", "search"],
               "query": [
                 {
@@ -183,7 +172,8 @@
             "method": "GET",
             "url": {
               "raw": "http://localhost:8080/api/projects/user/1",
-              "host": ["http://localhost:8080"],
+              "host": ["localhost"],
+              "port": "8080",
               "path": ["api", "projects", "user", "1"]
             }
           }
@@ -203,8 +193,14 @@
               "port": "8080",
               "path": ["api", "records", "start"],
               "query": [
-                { "key": "projectId", "value": "1" },
-                { "key": "username", "value": "testuser" }
+                {
+                  "key": "projectId",
+                  "value": "1"
+                },
+                {
+                  "key": "username",
+                  "value": "testuser"
+                }
               ]
             }
           }
@@ -219,8 +215,14 @@
               "port": "8080",
               "path": ["api", "records", "finish"],
               "query": [
-                { "key": "projectId", "value": "1" },
-                { "key": "username", "value": "testuser" }
+                {
+                  "key": "projectId",
+                  "value": "1"
+                },
+                {
+                  "key": "username",
+                  "value": "testuser"
+                }
               ]
             }
           }
@@ -283,8 +285,14 @@
               "port": "8080",
               "path": ["api", "records", "between"],
               "query": [
-                { "key": "startDate", "value": "2025-03-01T00:00:00Z" },
-                { "key": "endDate", "value": "2025-03-05T23:59:59Z" }
+                {
+                  "key": "startDate",
+                  "value": "2024-03-01T00:00:00Z"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-03-05T23:59:59Z"
+                }
               ]
             }
           }
@@ -293,21 +301,16 @@
           "name": "Update Record",
           "request": {
             "method": "PATCH",
-            "body": {
-              "mode": "raw",
-              "raw": "{\"startTime\": \"2025-03-01T12:00:00\", \"finishTime\": \"2025-03-01T14:00:00\", \"duration\": 120, \"projectId\": 1}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "headers": [
+            "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startTime\": \"2024-03-01T12:00:00Z\",\n  \"finishTime\": \"2024-03-01T14:00:00Z\",\n  \"duration\": 120,\n  \"projectId\": 1\n}"
+            },
             "url": {
               "raw": "http://localhost:8080/api/records/1",
               "host": ["localhost"],
@@ -349,21 +352,16 @@
           "name": "Create User",
           "request": {
             "method": "POST",
-            "body": {
-              "mode": "raw",
-              "raw": "{\"username\": \"string\", \"password\": \"string\", \"email\": \"string@example.com\", \"role\": \"USER\"}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "headers": [
+            "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"newuser\",\n  \"password\": \"newpassword\",\n  \"email\": \"newuser@example.com\",\n  \"role\": \"USER\"\n}"
+            },
             "url": {
               "raw": "http://localhost:8080/api/users",
               "host": ["localhost"],
@@ -400,21 +398,16 @@
           "name": "Update User",
           "request": {
             "method": "PUT",
-            "body": {
-              "mode": "raw",
-              "raw": "{\"username\": \"newName\", \"email\": \"newEmail@example.com\"}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "headers": [
+            "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"updateduser\",\n  \"email\": \"updateduser@example.com\"\n}"
+            },
             "url": {
               "raw": "http://localhost:8080/api/users/1",
               "host": ["localhost"],
@@ -444,7 +437,12 @@
               "host": ["localhost"],
               "port": "8080",
               "path": ["api", "users", "find"],
-              "query": [{ "key": "username", "value": "testuser" }]
+              "query": [
+                {
+                  "key": "username",
+                  "value": "testuser"
+                }
+              ]
             }
           }
         }

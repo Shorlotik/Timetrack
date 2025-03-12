@@ -38,7 +38,6 @@ public class RecordService {
         record.setUser(user);
         record.setProject(project);
 
-        // Сохраняем запись
         return recordRepository.save(record);
     }
 

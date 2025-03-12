@@ -70,20 +70,16 @@ public class AuthService {
         }
 
         String token = authHeader.substring(7);
-        String username = jwtUtils.extractUsername(token);  // Получаем имя пользователя из токена
-
         if (isTokenInvalid(token)) {
             throw new IllegalArgumentException("This token is already invalidated");
         }
 
-        invalidTokens.add(token);
+        invalidTokens.add(token); // Добавляем токен в список недействительных
         SecurityContextHolder.clearContext();
 
-        // Получаем объект пользователя из базы данных
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsername(jwtUtils.extractUsername(token))
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Возвращаем UserDTO с полями, которые нужно показать
         return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getRoles().iterator().next().getName(), user.getPassword());
     }
 

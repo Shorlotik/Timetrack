@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/records")
@@ -23,15 +24,23 @@ public class RecordController {
     }
 
     @PostMapping("/start")
-    public ResponseEntity<Record> startTracking(@RequestParam Long projectId, @RequestParam String username) {
-        Record record = recordService.startTracking(projectId, username);
-        return ResponseEntity.status(HttpStatus.CREATED).body(record);
+    public ResponseEntity<?> startTracking(@RequestParam Long projectId, @RequestParam String username) {
+        try {
+            Record record = recordService.startTracking(projectId, username);
+            return ResponseEntity.status(HttpStatus.CREATED).body(record);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+        }
     }
 
     @PostMapping("/finish")
     public ResponseEntity<Record> finishTracking(@RequestParam Long projectId, @RequestParam String username) {
-        Record record = recordService.finishTracking(projectId, username);
-        return ResponseEntity.status(HttpStatus.CREATED).body(record);
+        try {
+            Record record = recordService.finishTracking(projectId, username);
+            return ResponseEntity.status(HttpStatus.CREATED).body(record);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((Record) Map.of("error", e.getMessage()));
+        }
     }
 
     @GetMapping

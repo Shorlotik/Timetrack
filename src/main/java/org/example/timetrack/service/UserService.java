@@ -31,7 +31,6 @@ public class UserService {
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
 
-        // Проверка роли из DTO и установка роли
         Role userRole = roleRepository.findByName(userDTO.getRole())
                 .orElseThrow(() -> new RuntimeException("Role not found"));
 
@@ -40,7 +39,7 @@ public class UserService {
 
         userRepository.save(user);
 
-        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), userRole.getName(), user.getPassword()); // Возвращаем роль как часть DTO
+        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), userRole.getName(), user.getPassword());
     }
 
     public List<UserDTO> getAllUsers() {

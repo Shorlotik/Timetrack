@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -18,12 +19,12 @@ public class ProjectController {
 
     // Создание проекта
     @PostMapping
-    public ResponseEntity<ProjectDTO> createProject(@RequestBody ProjectDTO projectDTO) {
+    public ResponseEntity<?> createProject(@RequestBody ProjectDTO projectDTO) {
         try {
             ProjectDTO createdProject = projectService.createProject(projectDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdProject);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Ошибка создания проекта
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
         }
     }
 

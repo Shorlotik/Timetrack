@@ -28,7 +28,6 @@ databaseChangeLog:
                   name: email
                   type: varchar(255)
                   constraints:
-                    nullable: false
                     unique: true
               - column:
                   name: full_name
@@ -37,21 +36,31 @@ databaseChangeLog:
                   name: created_at
                   type: timestamp
                   defaultValueComputed: CURRENT_TIMESTAMP
-                  constraints:
-                    nullable: false
               - column:
                   name: updated_at
                   type: timestamp
                   defaultValueComputed: CURRENT_TIMESTAMP
-                  constraints:
-                    nullable: false
+        - createIndex:
+            tableName: users
+            indexName: users_username_key
+            unique: true
+            columns:
+              - column:
+                  name: username
+        - createIndex:
+            tableName: users
+            indexName: users_email_key
+            unique: true
+            columns:
+              - column:
+                  name: email
 
   - changeSet:
       id: 2
       author: admin
       changes:
         - createTable:
-            tableName: projects
+            tableName: roles
             columns:
               - column:
                   name: id
@@ -66,119 +75,16 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     unique: true
+        - createIndex:
+            tableName: roles
+            indexName: roles_name_key
+            unique: true
+            columns:
               - column:
-                  name: description
-                  type: varchar(255)
-              - column:
-                  name: user_id
-                  type: bigint
-                  constraints:
-                    nullable: false
-        - addForeignKeyConstraint:
-            baseTableName: projects
-            baseColumnNames: user_id
-            referencedTableName: users
-            referencedColumnNames: id
-            constraintName: fk_projects_user
-            onDelete: CASCADE
+                  name: name
 
   - changeSet:
       id: 3
-      author: admin
-      changes:
-        - createTable:
-            tableName: record
-            columns:
-              - column:
-                  name: id
-                  type: bigint
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
-                  name: start_time
-                  type: timestamp
-                  defaultValueComputed: CURRENT_TIMESTAMP
-                  constraints:
-                    nullable: false
-              - column:
-                  name: finish_time
-                  type: timestamp
-              - column:
-                  name: duration
-                  type: integer
-              - column:
-                  name: project_id
-                  type: bigint
-                  constraints:
-                    nullable: false
-              - column:
-                  name: user_id
-                  type: bigint
-                  constraints:
-                    nullable: false
-        - addForeignKeyConstraint:
-            baseTableName: record
-            baseColumnNames: project_id
-            referencedTableName: projects
-            referencedColumnNames: id
-            constraintName: fk_record_project
-            onDelete: CASCADE
-        - addForeignKeyConstraint:
-            baseTableName: record
-            baseColumnNames: user_id
-            referencedTableName: users
-            referencedColumnNames: id
-            constraintName: fk_record_user
-            onDelete: CASCADE
-
-  - changeSet:
-      id: 4
-      author: admin
-      changes:
-        - createTable:
-            tableName: roles
-            columns:
-              - column:
-                  name: id
-                  type: bigint
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
-                  name: name
-                  type: varchar(255)
-                  constraints:
-                    nullable: false
-                    unique: true
-
-  - changeSet:
-      id: 5
-      author: admin
-      changes:
-        - insert:
-            tableName: roles
-            columns:
-              - column:
-                  name: id
-                  value: "1"
-              - column:
-                  name: name
-                  value: "USER"
-        - insert:
-            tableName: roles
-            columns:
-              - column:
-                  name: id
-                  value: "2"
-              - column:
-                  name: name
-                  value: "ADMIN"
-
-  - changeSet:
-      id: 6
       author: admin
       changes:
         - createTable:
@@ -211,3 +117,217 @@ databaseChangeLog:
             referencedColumnNames: id
             constraintName: fk_user_roles_role
             onDelete: CASCADE
+
+  - changeSet:
+      id: 4
+      author: admin
+      changes:
+        - createTable:
+            tableName: projects
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: created_by
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: projects
+            baseColumnNames: created_by
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_projects_user
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 5
+      author: admin
+      changes:
+        - createTable:
+            tableName: record
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: start_time
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: finish_time
+                  type: timestamp
+              - column:
+                  name: duration
+                  type: bigint
+              - column:
+                  name: project_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: record
+            baseColumnNames: project_id
+            referencedTableName: projects
+            referencedColumnNames: id
+            constraintName: fk_record_project
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: record
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_record_user
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 6
+      author: admin
+      changes:
+        - createTable:
+            tableName: tasks
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: project_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: title
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: status
+                  type: varchar(50)
+                  defaultValue: 'NEW'
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - addForeignKeyConstraint:
+            baseTableName: tasks
+            baseColumnNames: project_id
+            referencedTableName: projects
+            referencedColumnNames: id
+            constraintName: fk_tasks_project
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 7
+      author: admin
+      changes:
+        - createTable:
+            tableName: time_entries
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: task_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_time
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_time
+                  type: timestamp
+              - column:
+                  name: duration
+                  type: bigint
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - addForeignKeyConstraint:
+            baseTableName: time_entries
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_time_entries_user
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: time_entries
+            baseColumnNames: task_id
+            referencedTableName: tasks
+            referencedColumnNames: id
+            constraintName: fk_time_entries_task
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 8
+      author: admin
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: "1"
+              - column:
+                  name: name
+                  value: "USER"
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: "2"
+              - column:
+                  name: name
+                  value: "ADMIN"

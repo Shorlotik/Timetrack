@@ -36,13 +36,12 @@ public class AuthController {
 
     // Логаут
     @PostMapping("/logout")
-    public ResponseEntity<UserDTO> logout(@RequestHeader(name = "Authorization", required = false) String authHeader) {
+    public ResponseEntity<?> logout(@RequestHeader(name = "Authorization", required = false) String authHeader) {
         try {
             UserDTO userDTO = authService.logout(authHeader);
-            return ResponseEntity.ok(userDTO);  // Возвращаем объект пользователя
+            return ResponseEntity.ok(userDTO);
         } catch (IllegalArgumentException e) {
-            // Обработка ошибки, если токен некорректен
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
         }
     }
 }
