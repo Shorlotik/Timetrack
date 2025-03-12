@@ -40,20 +40,6 @@ databaseChangeLog:
                   name: updated_at
                   type: timestamp
                   defaultValueComputed: CURRENT_TIMESTAMP
-        - createIndex:
-            tableName: users
-            indexName: users_username_key
-            unique: true
-            columns:
-              - column:
-                  name: username
-        - createIndex:
-            tableName: users
-            indexName: users_email_key
-            unique: true
-            columns:
-              - column:
-                  name: email
 
   - changeSet:
       id: 2
@@ -75,13 +61,6 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     unique: true
-        - createIndex:
-            tableName: roles
-            indexName: roles_name_key
-            unique: true
-            columns:
-              - column:
-                  name: name
 
   - changeSet:
       id: 3
@@ -180,6 +159,8 @@ databaseChangeLog:
               - column:
                   name: duration
                   type: bigint
+                  constraints:
+                    nullable: true
               - column:
                   name: project_id
                   type: bigint
@@ -287,6 +268,8 @@ databaseChangeLog:
               - column:
                   name: duration
                   type: bigint
+                  constraints:
+                    nullable: true
               - column:
                   name: description
                   type: text
@@ -317,17 +300,11 @@ databaseChangeLog:
             tableName: roles
             columns:
               - column:
-                  name: id
-                  value: "1"
-              - column:
                   name: name
                   value: "USER"
         - insert:
             tableName: roles
             columns:
-              - column:
-                  name: id
-                  value: "2"
               - column:
                   name: name
                   value: "ADMIN"

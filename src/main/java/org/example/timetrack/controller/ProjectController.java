@@ -17,7 +17,6 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
-    // Создание проекта
     @PostMapping
     public ResponseEntity<?> createProject(@RequestBody ProjectDTO projectDTO) {
         try {
@@ -28,44 +27,50 @@ public class ProjectController {
         }
     }
 
-    // Получение всех проектов
     @GetMapping
     public ResponseEntity<List<ProjectDTO>> getAllProjects() {
         List<ProjectDTO> projects = projectService.getAllProjects();
-        return ResponseEntity.ok(projects.isEmpty() ? List.of() : projects); // Пустой список если нет проектов
+        return ResponseEntity.ok(projects.isEmpty() ? List.of() : projects);
     }
 
-    // Получение проекта по ID
     @GetMapping("/{id}")
-    public ResponseEntity<ProjectDTO> getProjectById(@PathVariable Long id) {
-        return projectService.getProjectById(id) // Обрабатываем Optional
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+    public ResponseEntity<?> getProjectById(@PathVariable Long id) {
+        try {
+            ProjectDTO projectDTO = projectService.getProjectById(id)
+                    .orElseThrow(() -> new RuntimeException("Project not found"));
+            return ResponseEntity.ok(projectDTO);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        }
     }
 
-    // Обновление проекта
     @PutMapping("/{id}")
-    public ResponseEntity<ProjectDTO> updateProject(@PathVariable Long id, @RequestBody ProjectDTO projectDTO) {
-        return projectService.updateProject(id, projectDTO) // Обрабатываем Optional
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+    public ResponseEntity<?> updateProject(@PathVariable Long id, @RequestBody ProjectDTO projectDTO) {
+        try {
+            ProjectDTO updatedProject = projectService.updateProject(id, projectDTO)
+                    .orElseThrow(() -> new RuntimeException("Project not found"));
+            return ResponseEntity.ok(updatedProject);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        }
     }
 
-    // Удаление проекта
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
-        boolean deleted = projectService.deleteProject(id);
-        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    public ResponseEntity<?> deleteProject(@PathVariable Long id) {
+        try {
+            boolean deleted = projectService.deleteProject(id);
+            return deleted ? ResponseEntity.noContent().build() : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        }
     }
 
-    // Поиск проектов по названию
     @GetMapping("/search")
     public ResponseEntity<List<ProjectDTO>> searchProjectsByName(@RequestParam String name) {
         List<ProjectDTO> projects = projectService.searchProjectsByName(name);
-        return ResponseEntity.ok(projects.isEmpty() ? List.of() : projects); // Пустой список если нет проектов
+        return ResponseEntity.ok(projects.isEmpty() ? List.of() : projects);
     }
 
-    // Получение проектов пользователя
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<ProjectDTO>> getProjectsByUser(@PathVariable Long userId) {
         List<ProjectDTO> projects = projectService.getProjectsByUser(userId);

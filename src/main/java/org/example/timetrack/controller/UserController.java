@@ -18,7 +18,6 @@ public class UserController {
 
     private final UserService userService;
 
-    // CREATE (Регистрация пользователя)
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO) {
         try {
@@ -29,42 +28,49 @@ public class UserController {
         }
     }
 
-    // READ ONE (Получить пользователя по ID)
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
-        UserDTO userDTO = userService.getUserById(id);
-        return userDTO != null ? ResponseEntity.ok(userDTO) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-    }
-
-    // READ ALL (Получить всех пользователей)
-    @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        List<UserDTO> users = userService.getAllUsers();
-        return ResponseEntity.ok(users.isEmpty() ? List.of() : users); // Пустой список если нет пользователей
-    }
-
-    // UPDATE (Обновить пользователя)
-    @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
         try {
-            UserDTO updatedUser = userService.updateUser(id, userDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(updatedUser);
+            UserDTO userDTO = userService.getUserById(id);
+            return ResponseEntity.ok(userDTO);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((UserDTO) Map.of("error", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         }
     }
 
-    // DELETE (Удалить пользователя)
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        boolean deleted = userService.deleteUser(id);
-        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<UserDTO> users = userService.getAllUsers();
+        return ResponseEntity.ok(users.isEmpty() ? List.of() : users);
     }
 
-    // FIND BY USERNAME (Поиск пользователя по имени)
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+        try {
+            UserDTO updatedUser = userService.updateUser(id, userDTO);
+            return ResponseEntity.ok(updatedUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        try {
+            boolean deleted = userService.deleteUser(id);
+            return deleted ? ResponseEntity.noContent().build() : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        }
+    }
+
     @GetMapping("/find")
-    public ResponseEntity<UserDTO> findUserByUsername(@RequestParam String username) {
-        Optional<UserDTO> userDTO = userService.findByUsername(username);
-        return userDTO.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+    public ResponseEntity<?> findUserByUsername(@RequestParam String username) {
+        try {
+            Optional<UserDTO> userDTO = userService.findByUsername(username);
+            return userDTO.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body((UserDTO) Map.of("error", "User not found")));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        }
     }
 }
