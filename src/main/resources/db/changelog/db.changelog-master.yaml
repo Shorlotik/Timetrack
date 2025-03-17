@@ -1,310 +1,282 @@
 databaseChangeLog:
   - changeSet:
-      id: 1
-      author: admin
+      author: "admin"
+      id: "1"
       changes:
         - createTable:
-            tableName: users
+            tableName: "users"
             columns:
               - column:
-                  name: id
-                  type: bigint
-                  autoIncrement: true
+                  name: "id"
+                  type: "bigserial"
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: username
-                  type: varchar(255)
+                  name: "username"
+                  type: "varchar(255)"
                   constraints:
                     nullable: false
                     unique: true
               - column:
-                  name: password
-                  type: varchar(255)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: email
-                  type: varchar(255)
+                  name: "email"
+                  type: "varchar(255)"
                   constraints:
                     unique: true
               - column:
-                  name: full_name
-                  type: varchar(255)
+                  name: "password"
+                  type: "varchar(255)"
+                  constraints:
+                    nullable: false
               - column:
-                  name: created_at
-                  type: timestamp
-                  defaultValueComputed: CURRENT_TIMESTAMP
-              - column:
-                  name: updated_at
-                  type: timestamp
-                  defaultValueComputed: CURRENT_TIMESTAMP
+                  name: "created_at"
+                  type: "timestamp"
+                  defaultValueComputed: "CURRENT_TIMESTAMP"
 
   - changeSet:
-      id: 2
-      author: admin
+      author: "admin"
+      id: "2"
       changes:
         - createTable:
-            tableName: roles
+            tableName: "roles"
             columns:
               - column:
-                  name: id
-                  type: bigint
-                  autoIncrement: true
+                  name: "id"
+                  type: "bigserial"
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: name
-                  type: varchar(255)
+                  name: "name"
+                  type: "varchar(255)"
                   constraints:
                     nullable: false
                     unique: true
 
   - changeSet:
-      id: 3
-      author: admin
+      author: "admin"
+      id: "3"
       changes:
         - createTable:
-            tableName: user_roles
+            tableName: "user_roles"
             columns:
               - column:
-                  name: user_id
-                  type: bigint
+                  name: "user_id"
+                  type: "bigint"
                   constraints:
                     nullable: false
               - column:
-                  name: role_id
-                  type: bigint
+                  name: "role_id"
+                  type: "bigint"
                   constraints:
                     nullable: false
-        - addPrimaryKey:
-            tableName: user_roles
-            columnNames: user_id, role_id
         - addForeignKeyConstraint:
-            baseTableName: user_roles
-            baseColumnNames: user_id
-            referencedTableName: users
-            referencedColumnNames: id
-            constraintName: fk_user_roles_user
-            onDelete: CASCADE
+            baseTableName: "user_roles"
+            baseColumnNames: "user_id"
+            referencedTableName: "users"
+            referencedColumnNames: "id"
+            constraintName: "fk_user_roles_user_id"
         - addForeignKeyConstraint:
-            baseTableName: user_roles
-            baseColumnNames: role_id
-            referencedTableName: roles
-            referencedColumnNames: id
-            constraintName: fk_user_roles_role
-            onDelete: CASCADE
+            baseTableName: "user_roles"
+            baseColumnNames: "role_id"
+            referencedTableName: "roles"
+            referencedColumnNames: "id"
+            constraintName: "fk_user_roles_role_id"
 
   - changeSet:
-      id: 4
-      author: admin
+      author: "admin"
+      id: "4"
       changes:
         - createTable:
-            tableName: projects
+            tableName: "projects"
             columns:
               - column:
-                  name: id
-                  type: bigint
-                  autoIncrement: true
+                  name: "id"
+                  type: "bigserial"
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: name
-                  type: varchar(255)
+                  name: "name"
+                  type: "varchar(255)"
                   constraints:
                     nullable: false
                     unique: true
               - column:
-                  name: description
-                  type: text
+                  name: "description"
+                  type: "text"
               - column:
-                  name: created_by
-                  type: bigint
+                  name: "created_at"
+                  type: "timestamp"
+                  defaultValueComputed: "CURRENT_TIMESTAMP"
+
+  - changeSet:
+      author: "admin"
+      id: "5"
+      changes:
+        - createTable:
+            tableName: "project_memberships"
+            columns:
+              - column:
+                  name: "user_id"
+                  type: "bigint"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "project_id"
+                  type: "bigint"
                   constraints:
                     nullable: false
         - addForeignKeyConstraint:
-            baseTableName: projects
-            baseColumnNames: created_by
-            referencedTableName: users
-            referencedColumnNames: id
-            constraintName: fk_projects_user
-            onDelete: CASCADE
+            baseTableName: "project_memberships"
+            baseColumnNames: "user_id"
+            referencedTableName: "users"
+            referencedColumnNames: "id"
+            constraintName: "fk_project_memberships_user_id"
+        - addForeignKeyConstraint:
+            baseTableName: "project_memberships"
+            baseColumnNames: "project_id"
+            referencedTableName: "projects"
+            referencedColumnNames: "id"
+            constraintName: "fk_project_memberships_project_id"
 
   - changeSet:
-      id: 5
-      author: admin
+      author: "admin"
+      id: "6"
       changes:
         - createTable:
-            tableName: record
+            tableName: "tasks"
             columns:
               - column:
-                  name: id
-                  type: bigint
-                  autoIncrement: true
+                  name: "id"
+                  type: "bigserial"
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: start_time
-                  type: timestamp
-                  defaultValueComputed: CURRENT_TIMESTAMP
+                  name: "project_id"
+                  type: "bigint"
                   constraints:
                     nullable: false
               - column:
-                  name: finish_time
-                  type: timestamp
-              - column:
-                  name: duration
-                  type: bigint
-                  constraints:
-                    nullable: true
-              - column:
-                  name: project_id
-                  type: bigint
+                  name: "title"
+                  type: "varchar(255)"
                   constraints:
                     nullable: false
               - column:
-                  name: user_id
-                  type: bigint
+                  name: "status"
+                  type: "varchar(50)"
                   constraints:
                     nullable: false
         - addForeignKeyConstraint:
-            baseTableName: record
-            baseColumnNames: project_id
-            referencedTableName: projects
-            referencedColumnNames: id
-            constraintName: fk_record_project
-            onDelete: CASCADE
-        - addForeignKeyConstraint:
-            baseTableName: record
-            baseColumnNames: user_id
-            referencedTableName: users
-            referencedColumnNames: id
-            constraintName: fk_record_user
-            onDelete: CASCADE
+            baseTableName: "tasks"
+            baseColumnNames: "project_id"
+            referencedTableName: "projects"
+            referencedColumnNames: "id"
+            constraintName: "fk_tasks_project_id"
 
   - changeSet:
-      id: 6
-      author: admin
+      author: "admin"
+      id: "7"
       changes:
         - createTable:
-            tableName: tasks
+            tableName: "time_entries"
             columns:
               - column:
-                  name: id
-                  type: bigint
-                  autoIncrement: true
+                  name: "id"
+                  type: "bigserial"
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: project_id
-                  type: bigint
+                  name: "user_id"
+                  type: "bigint"
                   constraints:
                     nullable: false
               - column:
-                  name: title
-                  type: varchar(255)
+                  name: "task_id"
+                  type: "bigint"
                   constraints:
                     nullable: false
               - column:
-                  name: description
-                  type: text
+                  name: "start_time"
+                  type: "timestamp"
               - column:
-                  name: status
-                  type: varchar(50)
-                  defaultValue: 'NEW'
-              - column:
-                  name: created_at
-                  type: timestamp
-                  defaultValueComputed: CURRENT_TIMESTAMP
-              - column:
-                  name: updated_at
-                  type: timestamp
-                  defaultValueComputed: CURRENT_TIMESTAMP
+                  name: "end_time"
+                  type: "timestamp"
         - addForeignKeyConstraint:
-            baseTableName: tasks
-            baseColumnNames: project_id
-            referencedTableName: projects
-            referencedColumnNames: id
-            constraintName: fk_tasks_project
-            onDelete: CASCADE
+            baseTableName: "time_entries"
+            baseColumnNames: "user_id"
+            referencedTableName: "users"
+            referencedColumnNames: "id"
+            constraintName: "fk_time_entries_user_id"
+        - addForeignKeyConstraint:
+            baseTableName: "time_entries"
+            baseColumnNames: "task_id"
+            referencedTableName: "tasks"
+            referencedColumnNames: "id"
+            constraintName: "fk_time_entries_task_id"
 
   - changeSet:
-      id: 7
-      author: admin
+      author: "admin"
+      id: "8"
       changes:
         - createTable:
-            tableName: time_entries
+            tableName: "sessions"
             columns:
               - column:
-                  name: id
-                  type: bigint
-                  autoIncrement: true
+                  name: "id"
+                  type: "bigserial"
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: user_id
-                  type: bigint
+                  name: "user_id"
+                  type: "bigint"
                   constraints:
                     nullable: false
               - column:
-                  name: task_id
-                  type: bigint
+                  name: "token"
+                  type: "varchar(512)"
                   constraints:
                     nullable: false
               - column:
-                  name: start_time
-                  type: timestamp
-                  constraints:
-                    nullable: false
-              - column:
-                  name: end_time
-                  type: timestamp
-              - column:
-                  name: duration
-                  type: bigint
-                  constraints:
-                    nullable: true
-              - column:
-                  name: description
-                  type: text
-              - column:
-                  name: created_at
-                  type: timestamp
-                  defaultValueComputed: CURRENT_TIMESTAMP
+                  name: "expires_at"
+                  type: "timestamp"
         - addForeignKeyConstraint:
-            baseTableName: time_entries
-            baseColumnNames: user_id
-            referencedTableName: users
-            referencedColumnNames: id
-            constraintName: fk_time_entries_user
-            onDelete: CASCADE
-        - addForeignKeyConstraint:
-            baseTableName: time_entries
-            baseColumnNames: task_id
-            referencedTableName: tasks
-            referencedColumnNames: id
-            constraintName: fk_time_entries_task
-            onDelete: CASCADE
+            baseTableName: "sessions"
+            baseColumnNames: "user_id"
+            referencedTableName: "users"
+            referencedColumnNames: "id"
+            constraintName: "fk_sessions_user_id"
 
   - changeSet:
-      id: 8
-      author: admin
+      author: "admin"
+      id: "9"
       changes:
         - insert:
-            tableName: roles
+            tableName: "roles"
             columns:
               - column:
-                  name: name
-                  value: "USER"
-        - insert:
-            tableName: roles
-            columns:
-              - column:
-                  name: name
+                  name: "name"
                   value: "ADMIN"
+        - insert:
+            tableName: "roles"
+            columns:
+              - column:
+                  name: "name"
+                  value: "USER"
+
+  - changeSet:
+      author: "admin"
+      id: "10"
+      changes:
+        - insert:
+            tableName: "users"
+            columns:
+              - column:
+                  name: "username"
+                  value: "admin"
+              - column:
+                  name: "password"
+                  value: "$2a$10$7eqJtq98hPqEX7fNZaFWoOS6F.HI4hZ5rlyf5lw8mZz2yRJ7RAqf6"
