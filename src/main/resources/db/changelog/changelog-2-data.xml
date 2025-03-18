@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Вставка ролей -->
+    <changeSet author="admin" id="109">
+        <insert tableName="roles">
+            <column name="name" value="ADMIN"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="USER"/>
+        </insert>
+    </changeSet>
+
+    <!-- Вставка тестовых пользователей -->
+    <changeSet author="admin" id="110">
+        <insert tableName="users">
+            <column name="username" value="admin"/>
+            <column name="password" value="$2a$10$7eqJtq98hPqEX7fNZaFWoOS6F.HI4hZ5rlyf5lw8mZz2yRJ7RAqf6"/> <!-- зашифрованный пароль -->
+            <column name="email" value="admin@example.com"/>
+        </insert>
+        <insert tableName="users">
+            <column name="username" value="user1"/>
+            <column name="password" value="$2a$10$7eqJtq98hPqEX7fNZaFWoOS6F.HI4hZ5rlyf5lw8mZz2yRJ7RAqf6"/> <!-- зашифрованный пароль -->
+            <column name="email" value="user1@example.com"/>
+        </insert>
+        <insert tableName="users">
+            <column name="username" value="user2"/>
+            <column name="password" value="$2a$10$7eqJtq98hPqEX7fNZaFWoOS6F.HI4hZ5rlyf5lw8mZz2yRJ7RAqf6"/> <!-- зашифрованный пароль -->
+            <column name="email" value="user2@example.com"/>
+        </insert>
+    </changeSet>
+
+    <!-- Вставка пользователей в роли (user_roles) -->
+    <changeSet author="admin" id="111">
+        <insert tableName="user_roles">
+            <column name="user_id" value="1"/>
+            <column name="role_id" value="1"/> <!-- Роль ADMIN -->
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" value="2"/>
+            <column name="role_id" value="2"/> <!-- Роль USER -->
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" value="3"/>
+            <column name="role_id" value="2"/> <!-- Роль USER -->
+        </insert>
+    </changeSet>
+
+    <!-- Вставка проектов -->
+    <changeSet author="admin" id="112">
+        <insert tableName="projects">
+            <column name="name" value="Project 1"/>
+            <column name="description" value="Description of Project 1"/>
+        </insert>
+        <insert tableName="projects">
+            <column name="name" value="Project 2"/>
+            <column name="description" value="Description of Project 2"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
