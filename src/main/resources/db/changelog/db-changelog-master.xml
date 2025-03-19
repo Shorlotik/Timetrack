@@ -6,8 +6,8 @@
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <!-- Подключение первой миграции с DDL -->
-    <include file="db/changelog/changelog-1-ddl.xml" />
+    <include file="db/changelog/changelog-3-ddl.xml" />
     <!-- Подключение второй миграции с данными -->
-    <include file="db/changelog/changelog-2-data.xml" />
+    <include file="db/changelog/changelog-4-data.xml" />
 
 </databaseChangeLog>

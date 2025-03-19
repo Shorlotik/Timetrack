@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+        <!-- Создание таблицы users -->
+        <changeSet author="admin" id="101">
+            <createTable tableName="users">
+                <column name="id" type="bigserial">
+                    <constraints primaryKey="true" nullable="false"/>
+                </column>
+                <column name="username" type="varchar(255)">
+                    <constraints nullable="false" unique="true"/>
+                </column>
+                <column name="email" type="varchar(255)">
+                    <constraints unique="true"/>
+                </column>
+                <column name="password" type="varchar(255)">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="created_at" type="timestamp" defaultValueDate="NOW()">
+                    <constraints nullable="false"/>
+                </column>
+            </createTable>
+        </changeSet>
+
+        <!-- Создание таблицы roles -->
+        <changeSet author="admin" id="102">
+            <createTable tableName="roles">
+                <column name="id" type="bigserial">
+                    <constraints primaryKey="true" nullable="false"/>
+                </column>
+                <column name="name" type="varchar(255)">
+                    <constraints nullable="false" unique="true"/>
+                </column>
+            </createTable>
+        </changeSet>
+
+        <!-- Таблица user_roles -->
+        <changeSet author="admin" id="103">
+            <createTable tableName="user_roles">
+                <column name="user_id" type="bigint">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="role_id" type="bigint">
+                    <constraints nullable="false"/>
+                </column>
+            </createTable>
+            <addForeignKeyConstraint baseTableName="user_roles"
+                                     baseColumnNames="user_id"
+                                     referencedTableName="users"
+                                     referencedColumnNames="id"
+                                     constraintName="fk_user_roles_user_id"/>
+            <addForeignKeyConstraint baseTableName="user_roles"
+                                     baseColumnNames="role_id"
+                                     referencedTableName="roles"
+                                     referencedColumnNames="id"
+                                     constraintName="fk_user_roles_role_id"/>
+        </changeSet>
+
+        <!-- Таблица projects с user_id -->
+        <changeSet author="admin" id="104">
+            <createTable tableName="projects">
+                <column name="id" type="bigserial">
+                    <constraints primaryKey="true" nullable="false"/>
+                </column>
+                <column name="name" type="varchar(255)">
+                    <constraints nullable="false" unique="true"/>
+                </column>
+                <column name="description" type="text"/>
+                <column name="created_at" type="timestamp" defaultValueDate="NOW()">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="user_id" type="bigint">
+                    <constraints nullable="false"/>
+                </column>
+            </createTable>
+            <addForeignKeyConstraint baseTableName="projects"
+                                     baseColumnNames="user_id"
+                                     referencedTableName="users"
+                                     referencedColumnNames="id"
+                                     constraintName="fk_projects_user_id"/>
+        </changeSet>
+
+
+    <!-- Создание таблицы project_memberships -->
+    <changeSet author="admin" id="105">
+        <createTable tableName="project_memberships">
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="project_memberships"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_project_memberships_user_id"/>
+        <addForeignKeyConstraint
+                baseTableName="project_memberships"
+                baseColumnNames="project_id"
+                referencedTableName="projects"
+                referencedColumnNames="id"
+                constraintName="fk_project_memberships_project_id"/>
+    </changeSet>
+
+    <!-- Создание таблицы tasks -->
+    <changeSet author="admin" id="106">
+        <createTable tableName="tasks">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="project_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="tasks"
+                baseColumnNames="project_id"
+                referencedTableName="projects"
+                referencedColumnNames="id"
+                constraintName="fk_tasks_project_id"/>
+    </changeSet>
+
+    <!-- Создание таблицы time_entries -->
+    <changeSet author="admin" id="107">
+        <createTable tableName="time_entries">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="task_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_time" type="timestamp"/>
+            <column name="end_time" type="timestamp"/>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="time_entries"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_time_entries_user_id"/>
+        <addForeignKeyConstraint
+                baseTableName="time_entries"
+                baseColumnNames="task_id"
+                referencedTableName="tasks"
+                referencedColumnNames="id"
+                constraintName="fk_time_entries_task_id"/>
+    </changeSet>
+
+    <!-- Создание таблицы sessions -->
+    <changeSet author="admin" id="108">
+        <createTable tableName="sessions">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="token" type="varchar(512)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expires_at" type="timestamp"/>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="sessions"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_sessions_user_id"/>
+    </changeSet>
+
+</databaseChangeLog>
